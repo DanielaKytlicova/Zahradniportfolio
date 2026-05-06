@@ -68,7 +68,7 @@ export const projects = [
       cz: "Výsadba založená na rytmu, textuře a postupném proměňování během roku.",
       en: "Planting built on rhythm, texture and gradual seasonal change."
     },
-    gallery: [PHOTOS.garden2, PHOTOS.garden9, PHOTOS.garden3, PHOTOS.garden1, PHOTOS.garden4],
+    gallery: [PHOTOS.garden2, PHOTOS.garden7, PHOTOS.garden3, PHOTOS.garden1, PHOTOS.garden4],
   },
   {
     id: 4,
