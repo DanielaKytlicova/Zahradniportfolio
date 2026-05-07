@@ -5,14 +5,14 @@ Postavit responzivní web (mobile-first) z dodaných HTML/textových podkladů +
 **Doplněno (2026-02-07):** Pořadí komponent v Nabídce — fotka vlevo přes celý blok. Jednoduchý admin na `/admin` chráněný heslem pro úpravu veškerého obsahu.
 
 ## Architecture
-- **Stack:** React (CRA) frontend + FastAPI backend + MongoDB (od 2026-02-07).
+- **Stack:** React (CRA) frontend + FastAPI backend + **JSON file storage** (od 2026-02-07, dříve MongoDB).
 - **Routing:** react-router-dom v7 (BrowserRouter).
 - **Public pages:** `/`, `/portfolio`, `/nabidka`, `/o-atelieru`, `/vzdelavani`, `/kontakt`.
 - **Admin page:** `/admin` (chráněno heslem, Nav skryt).
 - **Content data flow:**
   - `src/data/content.js` = výchozí (default) content (CZ/EN slovník, projekty, fotky URL).
   - `ContentContext` (`src/contexts/ContentContext.jsx`) načítá `GET /api/content` při startu, deep-merguje s defaulty a poskytuje všem stránkám přes `useContent()` hook.
-  - Backend ukládá content jako jeden JSON dokument v MongoDB collection `site_content` (_id="main").
+  - Backend ukládá content do souboru `${DATA_DIR}/content.json` (atomické rename).
 - **Lang context:** `LangProvider` v `src/contexts/LangContext.jsx` (CZ/EN switcher v navigaci).
 - **Styling:** custom CSS v `src/App.css` + `src/pages/Admin.css` (mobile-first).
 - **Logos:** transparent PNG v `public/logos/`.

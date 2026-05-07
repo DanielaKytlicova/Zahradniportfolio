@@ -2,7 +2,6 @@ from fastapi import FastAPI, APIRouter, HTTPException, Header, Body, UploadFile,
 from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import uuid
 import logging
@@ -12,15 +11,11 @@ from typing import Dict, Any, Optional
 from datetime import datetime, timezone
 
 from storage import init_storage, put_object, get_object, APP_NAME
+from db import get_content, set_content
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 # Admin password (single pre-set password, stored in backend env)
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'venku-admin-2026')
@@ -48,10 +43,9 @@ async def root():
 # ===== Content (CMS) endpoints =====
 
 @api_router.get("/content")
-async def get_content():
+async def get_content_endpoint():
     """Return persisted site content. Empty object if nothing saved yet."""
-    doc = await db.site_content.find_one({"_id": "main"}, {"_id": 0, "updated_at": 0})
-    return doc or {}
+    return await get_content()
 
 
 class LoginBody(BaseModel):
@@ -73,11 +67,7 @@ async def update_content(
     if x_admin_password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
     payload = {**content, "updated_at": datetime.now(timezone.utc).isoformat()}
-    await db.site_content.update_one(
-        {"_id": "main"},
-        {"$set": payload},
-        upsert=True,
-    )
+    await set_content(payload)
     return {"ok": True}
 
 
@@ -112,20 +102,9 @@ async def upload_image(
         logging.exception("Object storage upload failed")
         raise HTTPException(status_code=502, detail=f"Storage upload failed: {e}")
 
-    record = {
-        "id": str(uuid.uuid4()),
-        "storage_path": result["path"],
-        "original_filename": file.filename,
-        "content_type": content_type,
-        "size": result.get("size", len(data)),
-        "is_deleted": False,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-    }
-    await db.uploads.insert_one(record)
-
     # Public URL the frontend can drop into <img src=...>
     public_url = f"/api/files/{result['path']}"
-    return {"path": result["path"], "url": public_url, "size": record["size"]}
+    return {"path": result["path"], "url": public_url, "size": result.get("size", len(data))}
 
 
 # ===== Public file serving =====
@@ -179,8 +158,3 @@ async def startup():
         logger.info("Object storage initialized")
     except Exception as e:
         logger.error(f"Storage init failed: {e}")
-
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
