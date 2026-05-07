@@ -998,18 +998,21 @@ footer {
   .process-item {
     grid-template-columns: minmax(280px, 1.2fr) 70px 1.1fr 220px;
     gap: 36px;
-    padding: 0 0 48px 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+    margin-top: 56px;
     align-items: stretch;
   }
-  .process-item:first-child { padding-top: 48px; border-top: 1px solid var(--border); }
-  .process-num { font-size: 48px; padding-top: 4px; }
+  .process-item:first-child { margin-top: 0; }
+  .process-list { padding-bottom: 56px; }
+  .process-num { font-size: 48px; padding-top: 0; }
   .process-detail { margin-top: 0; }
   .process-img {
     width: 100%;
     margin: 0;
     aspect-ratio: auto;
     align-self: stretch;
-    min-height: 200px;
+    min-height: 0;
   }
   .deti-content { padding: 100px 40px; }
   .deti-hero { padding: 0 40px 60px; }
