@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { nav } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLang();
+  const { nav } = useContent();
   const location = useLocation();
   const isHome = location.pathname === "/";
 

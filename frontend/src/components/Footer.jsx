@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { nav } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 
 export default function Footer() {
   const { t, lang } = useLang();
+  const { nav } = useContent();
   return (
     <footer data-testid="site-footer">
       <div className="footer-brand">

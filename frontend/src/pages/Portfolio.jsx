@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { projects } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Portfolio() {
   const { t, lang } = useLang();
+  const { projects } = useContent();
   const [activeId, setActiveId] = useState(null);
   const active = projects.find((p) => p.id === activeId);
 
@@ -18,6 +20,15 @@ export default function Portfolio() {
 
   return (
     <div className="page active" data-testid="page-portfolio">
+      <SEO
+        title={{ cz: "Portfolio zahrad", en: "Garden portfolio" }}
+        description={{
+          cz: "Vybrané realizace zahrad, teras a venkovních prostorů od Atelieru Venku.",
+          en: "Selected realisations of gardens, terraces and outdoor spaces by Atelier Venku.",
+        }}
+        path="/portfolio"
+        image={projects[0]?.cover}
+      />
       <div className="page-hero">
         <div
           className="page-hero-bg"

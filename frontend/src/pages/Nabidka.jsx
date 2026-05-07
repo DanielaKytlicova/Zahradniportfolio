@@ -1,13 +1,21 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { services, processList } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Nabidka() {
   const { t } = useLang();
+  const { services, processList } = useContent();
   return (
     <div className="page active services-page" data-testid="page-nabidka">
+      <SEO
+        title={{ cz: "Nabídka služeb", en: "Services" }}
+        description={services.introText}
+        path="/nabidka"
+        image={processList[0]?.img}
+      />
       <div className="page-hero">
         <div
           className="page-hero-bg"
@@ -28,17 +36,17 @@ export default function Nabidka() {
         <div className="process-list">
           {processList.map((step) => (
             <div className="process-item" key={step.num} data-testid={`process-item-${step.num}`}>
+              <div
+                className="process-img"
+                style={{ backgroundImage: `url('${step.img}')` }}
+              />
               <div className="process-num">{step.num}</div>
-              <div>
+              <div className="process-content">
                 <div className="process-sub">{t(step.sub)}</div>
                 <div className="process-title">{t(step.title)}</div>
                 <div className="process-desc">{t(step.desc)}</div>
               </div>
               <div className="process-detail">{t(step.detail)}</div>
-              <div
-                className="process-img"
-                style={{ backgroundImage: `url('${step.img}')` }}
-              />
             </div>
           ))}
         </div>

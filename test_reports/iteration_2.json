@@ -1,0 +1,43 @@
+{
+  "summary": "Tested backend admin/CMS endpoints (8/8 pytest passed) and frontend admin flow + Nabidka layout + public site reflection. Backend GET /api/content, POST /api/admin/login (200/401), and PUT /api/admin/content (with/without/wrong X-Admin-Password) all behave correctly. Persistence verified via Create→GET pattern. Frontend admin: login gate, wrong-password error toast (Nesprávné heslo), correct password (venku-admin-2026) opens editor with all 7 sections (nav, home, projects, services, about, vzdelavani, kontakt), edit→Save shows ✓ toast, edited eyebrow appears on public homepage in both CZ and EN. Nav is correctly hidden on /admin and present on public site. All public pages (/, /portfolio, /nabidka, /o-atelieru, /vzdelavani, /kontakt) load. Logout returns to login screen. Nabidka desktop layout: image is correctly the leftmost grid column, then number, content, detail (order correct). Mobile layout: image stacks at top correctly. ONE LAYOUT BUG: on desktop the process-img stays exactly at min-height 260px and does NOT stretch to full block height when the row is taller (item 01 row=357px / img=260px; items 02–04 row=309px / img=260px) — requirement was 'full block height'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Nabidka /pages/Nabidka.jsx + App.css .process-img (desktop ≥700px)",
+        "issue": "process-img does NOT stretch to full row height. With grid align-items:stretch and height:100% set, the image still measures exactly 260px (= min-height) even when the row is 309–357px. Likely cause: height:100% on a grid item with no sized track + aspect-ratio:auto resolves to content height (0), so only min-height applies. Fix options: (a) remove the explicit 'height: 100%' and rely on default align-self:stretch (current align-items:stretch on parent should be enough); (b) add 'align-self: stretch;' on .process-img; (c) raise min-height (e.g., 320–360px). User requirement was 'photograph on the left, full block height, no border'.",
+        "selector": ".process-item .process-img (CSS in /app/frontend/src/App.css around lines 1007-1013)",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_admin_content.py",
+    "/app/test_reports/pytest/iteration2.xml"
+  ],
+  "action_items": [
+    "In /app/frontend/src/App.css media query (>=700px) for .process-img, ensure the image fills the full row height. Recommended minimal change: drop 'height: 100%' and add 'align-self: stretch;' OR increase min-height to ~340px so img visually matches the tallest row.",
+    "Optional: also remove the bottom border on the process-item if 'no border' was intended for the photograph cell (currently borders are on .process-item top/bottom which is the row separator — confirm with user whether the border around the image cell is acceptable).",
+    "Optional clean-up: data/content.js still references PHOTOS.garden9 (undefined) — carried over from iteration_1; not retested but flagged."
+  ],
+  "critical_code_review_comments": [
+    "server.py admin endpoints are clean: ADMIN_PASSWORD read from env, _id and updated_at correctly excluded from GET /api/content response.",
+    "PUT /api/admin/content does a $set with the full payload — this is a full replace per top-level key, not deep-merge; if admin clears a section the data could be lost across mixed clients. ContentContext compensates with deep-merge against defaults, so this is acceptable for the simple-CMS scope but worth documenting.",
+    "Admin password is sent in plain JSON / header; acceptable per stated requirement (single pre-set password) but no rate limiting and no transport-only enforcement — mention to user.",
+    "Admin.jsx re-validates saved sessionStorage password on mount via POST /api/admin/login — good UX, no leak of password to localStorage.",
+    "Nabidka.jsx JSX order is image → num → content → detail (matches requirement). The grid CSS column order matches.",
+    "Mocked contact form (Kontakt) remains MOCKED via setTimeout — already known and called out by main agent."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_content.py (new)"
+  ],
+  "success_rate": {"backend": "100% (8/8)", "frontend": "≈95% (1 layout bug)"},
+  "test_credentials": "Admin password: venku-admin-2026 (matches /app/backend/.env). /app/memory/test_credentials.md is empty — main agent should populate it.",
+  "seed_data_creation": "During testing, PUT /api/admin/content was used to write TEST_/E2E_ values into the site_content collection. Data was cleaned at the end (db.site_content.delete_many({}) returned 1 deletion). Public homepage now back to default content.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite: pytest /app/backend/tests/test_admin_content.py -v (uses REACT_APP_BACKEND_URL from /app/frontend/.env if env not set). Admin password 'venku-admin-2026'. Header is X-Admin-Password. The site_content Mongo collection was cleaned at end of iteration 2. Known frontend issue: .process-img in Nabidka not stretching full row height on desktop — confirm fixed visually after CSS change. /admin route hides nav (ConditionalNav). data-testids: admin-login, admin-login-error, admin-password-input, admin-login-submit, admin-editor, admin-section-{nav|home|projects|services|about|vzdelavani|kontakt}, admin-save, admin-save-ok, admin-save-err, admin-logout, admin-view-site, process-item-01..04, page-nabidka.",
+  "rca of the issue": "Bug: image not full block height. Reproduction: open /nabidka on viewport ≥1024px, inspect the 4 process items; .process-img boundingBox.height stays at 260 while the .process-item boundingBox.height is 309–357. RCA: in /app/frontend/src/App.css lines 1007-1013, .process-img sets height: 100% and min-height: 260px. Because .process-img is an empty <div> with background-image (no intrinsic content height), 'height: 100%' resolves against the grid track height, but in this layout the track is sized to the tallest content cell (.process-content) and the image's height: 100% appears to be ignored by the engine in favor of min-height (likely due to aspect-ratio:auto + percentage height interplay). Result: the image renders shorter than the row, leaving whitespace below it. Mitigation: remove 'height: 100%' and rely on default align-self: stretch from parent's align-items: stretch, OR explicitly add align-self: stretch on .process-img, OR raise min-height to match expected row height."
+}

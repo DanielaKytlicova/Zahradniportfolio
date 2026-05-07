@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useLang } from "../contexts/LangContext";
-import { kontakt } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Kontakt() {
   const { t, lang } = useLang();
+  const { kontakt } = useContent();
   const [form, setForm] = useState({ name: "", email: "", topic: "", message: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent
 
@@ -21,6 +23,11 @@ export default function Kontakt() {
 
   return (
     <div className="page active contact-page" data-testid="page-kontakt">
+      <SEO
+        title={{ cz: "Kontakt", en: "Contact" }}
+        description={kontakt.intro}
+        path="/kontakt"
+      />
       <div className="page-hero" style={{ height: "35vh", minHeight: 300 }}>
         <div
           className="page-hero-bg"
