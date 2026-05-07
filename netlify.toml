@@ -1,0 +1,14 @@
+[build]
+  base    = "frontend"
+  command = "yarn build"
+  publish = "frontend/build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  YARN_VERSION = "1.22.22"
+
+# SPA fallback — všechny routy posílej na index.html (React Router)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
