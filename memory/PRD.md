@@ -45,13 +45,21 @@ Postavit responzivní web (mobile-first) z dodaných HTML/textových podkladů +
 - **ContentContext:** všechny stránky (Nav, Footer, Home, Portfolio, Nabidka, OAtelieru, Vzdelavani, Kontakt) refaktorovány aby používaly content z backendu.
 - **Testy:** `/app/backend/tests/test_admin_content.py` 8/8 pass; frontend layout 100% pass (iter_5).
 
+## Implemented (2026-02-07, druhá várka)
+- **Object Storage upload:** Admin může nahrávat fotky přímo přes `Nahrát` tlačítko u každého image fieldu (i v galerii). Soubory ukládány do Emergent Object Storage, servírované přes `/api/files/{path}`. Endpoint `POST /api/admin/upload` (multipart/form-data, X-Admin-Password). Allowed types: jpeg/png/webp/gif, max 10 MB.
+- **SEO:** `react-helmet-async` + `<SEO />` komponenta pro per-page title/description/canonical/OG/Twitter cards. Lokalizace lang attr (cs/en) podle aktuálního jazyka.
+- **sitemap.xml** + **robots.txt** v `/app/frontend/public/` (Disallow /admin).
+- **noindex** na /admin route.
+- **Testy:** 9/9 backend upload + SEO. 100% frontend SEO checks (po fixu duplicate description).
+
 ## Color palette
 - Green `#607466`, Mint `#c3dac3`, Lavender `#e2a9f1`, Cream `#f7f4ef`, Black `#0d0d0d`
 
 ## Backlog / Next
 - P1: Skutečné odesílání emailů (Resend/SendGrid) pro kontaktní formulář
-- P1: Upload fotek přímo z admin (object storage) místo URL kopírování
-- P2: SEO meta tagy per stránka, sitemap, OG image
 - P2: Cookie banner (GDPR)
 - P2: Audit log změn obsahu v adminu
+- P2: Správa uploadovaných souborů v adminu (seznam, soft-delete)
+- P2: Nastavit reálnou doménu v `SITE_URL` (`/app/frontend/src/components/SEO.jsx`) po nasazení
 - P3: Více admin uživatelů + role
+- P3: Streaming upload (snížení paměti při velkých souborech)

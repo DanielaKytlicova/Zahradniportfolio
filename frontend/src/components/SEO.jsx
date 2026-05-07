@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { useLang } from "../contexts/LangContext";
 
 const SITE_URL = "https://ateliervenku.cz"; // Canonical site URL (update after deployment)
-const DEFAULT_OG = `${SITE_URL}/og-default.jpg`;
+const DEFAULT_OG = `${SITE_URL}/logos/venku-dark.png`;
 
 /**
  * Reusable per-page SEO component.
