@@ -58,10 +58,14 @@ button { font-family: inherit; }
 }
 .nav-logo-img-light,
 .nav-logo-img-dark {
-  height: 44px;
+  height: 64px;
   width: auto;
   display: block;
-  transition: opacity var(--transition);
+  transition: opacity var(--transition), height var(--transition);
+}
+.site-nav.scrolled .nav-logo-img-light,
+.site-nav.scrolled .nav-logo-img-dark {
+  height: 48px;
 }
 .nav-logo-img-dark { display: none; }
 .site-nav.scrolled .nav-logo-img-light { display: none; }
@@ -1014,6 +1018,10 @@ footer {
   .site-nav.scrolled { padding: 16px 56px; }
   .nav-links { display: flex; }
   .hamburger { display: none; }
+  .nav-logo-img-light,
+  .nav-logo-img-dark { height: 88px; }
+  .site-nav.scrolled .nav-logo-img-light,
+  .site-nav.scrolled .nav-logo-img-dark { height: 60px; }
   .hero-scroll { display: flex; right: 56px; bottom: 96px; }
   .hero-content { padding: 0 56px 96px; }
   .page-hero-content { padding: 0 56px 64px; }
