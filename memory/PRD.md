@@ -52,6 +52,12 @@ Postavit responzivní web (mobile-first) z dodaných HTML/textových podkladů +
 - **noindex** na /admin route.
 - **Testy:** 9/9 backend upload + SEO. 100% frontend SEO checks (po fixu duplicate description).
 
+## Implemented (2026-02-07, třetí várka — Railway hybrid deployment)
+- **`asset()` helper:** `/app/frontend/src/utils/asset.js` automaticky doplňuje `REACT_APP_BACKEND_URL` k path-relative URL `/api/files/...`, takže nahrané fotky fungují i když je frontend na Netlify a backend na Railway.
+- Použito ve všech místech, kde se zobrazují dynamické obrázky (Home, Portfolio, Nabidka, OAtelieru) a v `<SEO og:image>`.
+- **Railway config:** `/app/backend/Procfile`, `/app/backend/railway.json`, `/app/backend/runtime.txt`.
+- **DEPLOYMENT.md:** kompletní návod nasazení Hybrid (Netlify frontend + Railway backend + MongoDB) s checklistem, env variables a častými problémy.
+
 ## Color palette
 - Green `#607466`, Mint `#c3dac3`, Lavender `#e2a9f1`, Cream `#f7f4ef`, Black `#0d0d0d`
 

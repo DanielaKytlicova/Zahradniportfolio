@@ -4,6 +4,7 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import Footer from "../components/Footer";
 import SEO from "../components/SEO";
+import { asset } from "../utils/asset";
 
 export default function Portfolio() {
   const { t, lang } = useLang();
@@ -51,7 +52,7 @@ export default function Portfolio() {
           >
             <div
               className="portfolio-img"
-              style={{ backgroundImage: `url('${p.cover}')` }}
+              style={{ backgroundImage: `url('${asset(p.cover)}')` }}
             />
             <div className="portfolio-overlay">
               <div className="portfolio-info">
@@ -71,7 +72,7 @@ export default function Portfolio() {
           </div>
           <div className="portfolio-gallery">
             {active.gallery.map((src, idx) => (
-              <div key={idx} style={{ backgroundImage: `url('${src}')` }} />
+              <div key={idx} style={{ backgroundImage: `url('${asset(src)}')` }} />
             ))}
           </div>
           <button

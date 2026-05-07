@@ -59,6 +59,8 @@ function ImageField({ label, value, onChange, password, testid }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
+  const previewUrl = (value || "").startsWith("/api/") ? `${BACKEND}${value}` : value;
+
   const onPick = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = ""; // allow re-pick same file
@@ -100,7 +102,7 @@ function ImageField({ label, value, onChange, password, testid }) {
         {value ? (
           <div
             className="adm-thumb"
-            style={{ backgroundImage: `url('${value}')` }}
+            style={{ backgroundImage: `url('${previewUrl}')` }}
           />
         ) : null}
         <label className="adm-btn adm-btn-ghost adm-btn-sm adm-upload-btn">
@@ -317,7 +319,7 @@ function Editor({ initial, password, onLogout }) {
                     value={g}
                     onChange={(e) => setPath(["projects", i, "gallery", gi], e.target.value)}
                   />
-                  {g && <div className="adm-thumb" style={{ backgroundImage: `url('${g}')` }} />}
+                  {g && <div className="adm-thumb" style={{ backgroundImage: `url('${g.startsWith("/api/") ? `${BACKEND}${g}` : g}')` }} />}
                   <label className="adm-btn adm-btn-ghost adm-btn-sm adm-upload-btn">
                     ⤴
                     <input

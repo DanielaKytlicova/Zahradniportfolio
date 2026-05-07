@@ -3,6 +3,7 @@ import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 import SEO from "../components/SEO";
+import { asset } from "../utils/asset";
 
 export default function OAtelieru() {
   const { t } = useLang();
@@ -16,7 +17,7 @@ export default function OAtelieru() {
         image={about.hero}
       />
       <div className="page-hero">
-        <div className="page-hero-bg" style={{ backgroundImage: `url('${about.hero}')` }} />
+        <div className="page-hero-bg" style={{ backgroundImage: `url('${asset(about.hero)}')` }} />
         <div className="page-hero-content">
           <span className="page-hero-label">{t(about.eyebrow)}</span>
           <h1 className="page-hero-title">{t(about.title)}</h1>
@@ -25,7 +26,7 @@ export default function OAtelieru() {
 
       <div className="about-content">
         <div className="about-portrait">
-          <div className="about-img" style={{ backgroundImage: `url('${about.portrait}')` }} />
+          <div className="about-img" style={{ backgroundImage: `url('${asset(about.portrait)}')` }} />
           <div className="about-img-caption">{t(about.caption)}</div>
         </div>
         <div className="about-text">

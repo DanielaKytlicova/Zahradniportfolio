@@ -4,6 +4,7 @@ import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 import SEO from "../components/SEO";
+import { asset } from "../utils/asset";
 
 export default function Home() {
   const { t } = useLang();
@@ -17,7 +18,7 @@ export default function Home() {
         image={HERO_BG}
       />
       <section className="hero" style={{ padding: 0 }}>
-        <div className="hero-bg" style={{ backgroundImage: `url('${HERO_BG}')` }} />
+        <div className="hero-bg" style={{ backgroundImage: `url('${asset(HERO_BG)}')` }} />
         <div className="hero-overlay" />
         <div className="hero-grain" />
         <div className="hero-content">
