@@ -1,0 +1,45 @@
+{
+  "summary": "Re-measured /nabidka process-items at desktop 1440x900 after lowering .process-img min-height from 320px to 200px. Both acceptance criteria still FAIL.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": ".process-item (Nabidka)",
+        "issue": "Item bounding height NOT equal to image bounding height. Measured: item0=297 vs img=200 (diff=97), item1=249 vs 200 (diff=49), item2=249 vs 200 (diff=49), item3=250 vs 200 (diff=50). All exceed 5px tolerance. Root cause: .process-item has padding-top:48px (first-child) and padding-bottom:48px outside the grid track (App.css ~lines 1001,1004). That padding inflates item bounding box but is OUTSIDE the row, so it can never be covered by .process-img.",
+        "selector": ".process-item / .process-img",
+        "priority": "HIGH"
+      },
+      {
+        "component": ".process-item gridTemplateRows",
+        "issue": "Computed gridTemplateRows = '200px' on all 4 items — this IS a fixed pixel value pinned by .process-img min-height:200px (since natural max-content of .process-content is also <=200px, the row collapses exactly to min-height of img). Criterion 'row should size to content, not be pinned by image' is not satisfied; lowering min-height further (or removing it) would still produce a content-sized row, but as long as min-height >= content's intrinsic height, the row remains pinned.",
+        "selector": ".process-item",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "measurements_1440x900": [
+    {"i":0,"itemH":297,"imgH":200,"contentH":200,"contentScrollH":200,"padTop":"48px","padBot":"48px","gridTemplateRows":"200px"},
+    {"i":1,"itemH":249,"imgH":200,"contentH":200,"contentScrollH":200,"padTop":"0px","padBot":"48px","gridTemplateRows":"200px"},
+    {"i":2,"itemH":249,"imgH":200,"contentH":200,"contentScrollH":200,"padTop":"0px","padBot":"48px","gridTemplateRows":"200px"},
+    {"i":3,"itemH":250,"imgH":200,"contentH":200,"contentScrollH":200,"padTop":"0px","padBot":"48px","gridTemplateRows":"200px"}
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "Vertical padding on .process-item (48px top on first-child, 48px bottom on every item) is what makes item bounding height > img height. To make item==img within 5px, replace padding-top/padding-bottom on .process-item with margin between siblings (or move spacing to a wrapping container), OR allow .process-img to extend into the padding area (not possible while padding remains).",
+    "Remove min-height:200px from .process-img desktop rule (App.css line 1012) and instead let .process-content drive the row height via its intrinsic content height. With content scrollHeight currently 200px, removing min-height will produce a content-driven row of ~200px (or whatever content needs), satisfying criterion 2 (row not pinned by image). Then img with align-self:stretch will fill that row.",
+    "If a minimum visual size for the image is desired, set it on .process-content min-height instead of .process-img, so the row is content-driven, and the image stretches to match."
+  ],
+  "critical_code_review_comments": [
+    "Setting min-height on the image element itself defeats 'row sized to content'. The image should stretch (align-self:stretch with no min-height); minimums belong on the content column.",
+    ".process-item paddings are outside the grid track and contradict the requirement of item-height == img-height. Either drop them or rearchitect the spacing."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "0% (0/2 acceptance criteria met)"},
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Only re-measure /nabidka at 1440x900: (1) abs(item.getBoundingClientRect().height - img.getBoundingClientRect().height) <= 5 for each .process-item, (2) getComputedStyle(item).gridTemplateRows must not be a fixed pixel value matching .process-img min-height. Currently both fail. Padding on .process-item plus min-height on .process-img are the two levers. Earlier iterations: it.3 had min-height:320 (img>content); current it.4 has min-height:200 (img==content==200) but item still 249-297 due to vertical padding.",
+  "rca of the issue": "Two compounding issues: (a) .process-img desktop min-height:200px sets the implicit grid row to exactly 200px (since .process-content natural max-content also fits in 200px), so gridTemplateRows is reported as fixed '200px' pinned by the image's min-height — fails criterion 2. (b) .process-item has padding-top:48px on first-child and padding-bottom:48px on all items (App.css lines 1001 and 1004), located outside the grid row. This inflates the item's bounding box (249-297px) above the image's 200px row height — fails criterion 1. The image cannot stretch into this padding, so item.height will always exceed img.height by the padding amount."
+}

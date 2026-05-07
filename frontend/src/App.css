@@ -1009,7 +1009,7 @@ footer {
     margin: 0;
     aspect-ratio: auto;
     align-self: stretch;
-    min-height: 320px;
+    min-height: 200px;
   }
   .deti-content { padding: 100px 40px; }
   .deti-hero { padding: 0 40px 60px; }
