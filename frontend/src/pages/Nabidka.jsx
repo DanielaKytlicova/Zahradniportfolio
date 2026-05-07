@@ -3,12 +3,19 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Nabidka() {
   const { t } = useLang();
   const { services, processList } = useContent();
   return (
     <div className="page active services-page" data-testid="page-nabidka">
+      <SEO
+        title={{ cz: "Nabídka služeb", en: "Services" }}
+        description={services.introText}
+        path="/nabidka"
+        image={processList[0]?.img}
+      />
       <div className="page-hero">
         <div
           className="page-hero-bg"

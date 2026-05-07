@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useContentMeta } from "../contexts/ContentContext";
 import "./Admin.css";
 
@@ -54,7 +55,37 @@ function PlainField({ label, value, onChange, testid }) {
   );
 }
 
-function ImageField({ label, value, onChange, testid }) {
+function ImageField({ label, value, onChange, password, testid }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const onPick = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-pick same file
+    if (!file) return;
+    setBusy(true);
+    setErr("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch(`${BACKEND}/api/admin/upload`, {
+        method: "POST",
+        headers: { "X-Admin-Password": password },
+        body: fd,
+      });
+      if (!res.ok) {
+        const detail = await res.text().catch(() => "");
+        throw new Error(detail || `Status ${res.status}`);
+      }
+      const data = await res.json();
+      onChange(data.url);
+    } catch (e2) {
+      setErr(String(e2.message || e2));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="adm-field">
       <label className="adm-label">{label}</label>
@@ -63,7 +94,7 @@ function ImageField({ label, value, onChange, testid }) {
           className="adm-input"
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="https://…"
+          placeholder="https://… nebo nahrajte fotografii →"
           data-testid={testid}
         />
         {value ? (
@@ -72,7 +103,19 @@ function ImageField({ label, value, onChange, testid }) {
             style={{ backgroundImage: `url('${value}')` }}
           />
         ) : null}
+        <label className="adm-btn adm-btn-ghost adm-btn-sm adm-upload-btn">
+          {busy ? "Nahrávám…" : "Nahrát"}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            onChange={onPick}
+            disabled={busy}
+            style={{ display: "none" }}
+            data-testid={testid ? `${testid}-file` : undefined}
+          />
+        </label>
       </div>
+      {err && <div className="adm-error" style={{ marginTop: 6 }}>{err}</div>}
     </div>
   );
 }
@@ -118,6 +161,10 @@ function Login({ onSuccess }) {
 
   return (
     <div className="adm-login-wrap" data-testid="admin-login">
+      <Helmet>
+        <title>Admin — Atelier Venku</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <form className="adm-login" onSubmit={submit}>
         <h1 className="adm-login-title">Atelier Venku — Admin</h1>
         <p className="adm-login-sub">Zadejte heslo pro úpravu obsahu.</p>
@@ -159,6 +206,20 @@ function Editor({ initial, password, onLogout }) {
       return next;
     });
 
+  // Upload helper used by inline gallery rows
+  const uploadFile = async (file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch(`${BACKEND}/api/admin/upload`, {
+      method: "POST",
+      headers: { "X-Admin-Password": password },
+      body: fd,
+    });
+    if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+    const data = await res.json();
+    return data.url;
+  };
+
   const save = async () => {
     setStatus("saving");
     setErrMsg("");
@@ -186,6 +247,10 @@ function Editor({ initial, password, onLogout }) {
   /* ---------- Render ---------- */
   return (
     <div className="adm-wrap" data-testid="admin-editor">
+      <Helmet>
+        <title>Admin — Atelier Venku</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <header className="adm-header">
         <div className="adm-header-left">
           <span className="adm-eyebrow">Atelier Venku</span>
@@ -216,7 +281,7 @@ function Editor({ initial, password, onLogout }) {
 
       {/* HOME */}
       <Section title="Úvodní stránka" testid="admin-section-home">
-        <ImageField label="Pozadí hero" value={data.HERO_BG} onChange={(v) => setPath(["HERO_BG"], v)} testid="admin-hero-bg" />
+        <ImageField label="Pozadí hero" value={data.HERO_BG} onChange={(v) => setPath(["HERO_BG"], v)} password={password} testid="admin-hero-bg" />
         <TextField label="Eyebrow (malý nadpis)" value={data.home?.eyebrow} onChange={(v) => setPath(["home", "eyebrow"], v)} />
         <TextField label="Headline (HTML, např. <em>kurzíva</em>, <br>)" value={data.home?.headline} onChange={(v) => setPath(["home", "headline"], v)} multiline />
         <TextField label="Podtitulek" value={data.home?.sub} onChange={(v) => setPath(["home", "sub"], v)} multiline />
@@ -241,7 +306,7 @@ function Editor({ initial, password, onLogout }) {
             </div>
             <TextField label="Název" value={p.title} onChange={(v) => setPath(["projects", i, "title"], v)} />
             <TextField label="Lokace / rok" value={p.location} onChange={(v) => setPath(["projects", i, "location"], v)} />
-            <ImageField label="Hlavní fotografie" value={p.cover} onChange={(v) => setPath(["projects", i, "cover"], v)} />
+            <ImageField label="Hlavní fotografie" value={p.cover} onChange={(v) => setPath(["projects", i, "cover"], v)} password={password} />
             <TextField label="Popis" value={p.text} onChange={(v) => setPath(["projects", i, "text"], v)} multiline />
             <div className="adm-field">
               <label className="adm-label">Galerie (fotografie)</label>
@@ -253,6 +318,25 @@ function Editor({ initial, password, onLogout }) {
                     onChange={(e) => setPath(["projects", i, "gallery", gi], e.target.value)}
                   />
                   {g && <div className="adm-thumb" style={{ backgroundImage: `url('${g}')` }} />}
+                  <label className="adm-btn adm-btn-ghost adm-btn-sm adm-upload-btn">
+                    ⤴
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      style={{ display: "none" }}
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        e.target.value = "";
+                        if (!f) return;
+                        try {
+                          const url = await uploadFile(f);
+                          setPath(["projects", i, "gallery", gi], url);
+                        } catch (err) {
+                          alert(`Upload selhal: ${err.message}`);
+                        }
+                      }}
+                    />
+                  </label>
                   <button
                     type="button"
                     className="adm-btn adm-btn-ghost adm-btn-sm"
@@ -329,7 +413,7 @@ function Editor({ initial, password, onLogout }) {
             <TextField label="Název" value={s.title} onChange={(v) => setPath(["processList", i, "title"], v)} />
             <TextField label="Popis" value={s.desc} onChange={(v) => setPath(["processList", i, "desc"], v)} multiline />
             <TextField label="Detail / poznámka" value={s.detail} onChange={(v) => setPath(["processList", i, "detail"], v)} multiline />
-            <ImageField label="Fotografie" value={s.img} onChange={(v) => setPath(["processList", i, "img"], v)} />
+            <ImageField label="Fotografie" value={s.img} onChange={(v) => setPath(["processList", i, "img"], v)} password={password} />
           </div>
         ))}
       </Section>
@@ -338,8 +422,8 @@ function Editor({ initial, password, onLogout }) {
       <Section title="O ateliéru" testid="admin-section-about">
         <TextField label="Eyebrow" value={data.about?.eyebrow} onChange={(v) => setPath(["about", "eyebrow"], v)} />
         <TextField label="Titulek stránky" value={data.about?.title} onChange={(v) => setPath(["about", "title"], v)} />
-        <ImageField label="Hero pozadí" value={data.about?.hero} onChange={(v) => setPath(["about", "hero"], v)} />
-        <ImageField label="Portrétní fotografie" value={data.about?.portrait} onChange={(v) => setPath(["about", "portrait"], v)} />
+        <ImageField label="Hero pozadí" value={data.about?.hero} onChange={(v) => setPath(["about", "hero"], v)} password={password} />
+        <ImageField label="Portrétní fotografie" value={data.about?.portrait} onChange={(v) => setPath(["about", "portrait"], v)} password={password} />
         <TextField label="Popisek pod portrétem" value={data.about?.caption} onChange={(v) => setPath(["about", "caption"], v)} />
         <TextField label="H2 nadpis (HTML)" value={data.about?.h2} onChange={(v) => setPath(["about", "h2"], v)} multiline />
         <TextField label="Citace / highlight" value={data.about?.highlight} onChange={(v) => setPath(["about", "highlight"], v)} multiline />

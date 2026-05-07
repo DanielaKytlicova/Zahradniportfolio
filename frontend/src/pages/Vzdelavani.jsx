@@ -4,6 +4,7 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 const icons = {
   leaf:  <Leaf size={28} strokeWidth={1.4} />,
@@ -16,6 +17,11 @@ export default function Vzdelavani() {
   const { vzdelavani } = useContent();
   return (
     <div className="page active deti-page" data-testid="page-vzdelavani">
+      <SEO
+        title={{ cz: "Vzdělávání venku a hravě", en: "Outdoor education, playfully" }}
+        description={vzdelavani.sub}
+        path="/vzdelavani"
+      />
       <div className="deti-hero">
         <div
           className="deti-hero-bg"

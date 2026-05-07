@@ -3,6 +3,7 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Kontakt() {
   const { t, lang } = useLang();
@@ -22,6 +23,11 @@ export default function Kontakt() {
 
   return (
     <div className="page active contact-page" data-testid="page-kontakt">
+      <SEO
+        title={{ cz: "Kontakt", en: "Contact" }}
+        description={kontakt.intro}
+        path="/kontakt"
+      />
       <div className="page-hero" style={{ height: "35vh", minHeight: 300 }}>
         <div
           className="page-hero-bg"

@@ -1,5 +1,6 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { LangProvider } from "@/contexts/LangContext";
 import { ContentProvider } from "@/contexts/ContentContext";
 import Nav from "@/components/Nav";
@@ -20,23 +21,25 @@ function ConditionalNav() {
 
 function App() {
   return (
-    <ContentProvider>
-      <LangProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <ConditionalNav />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/nabidka" element={<Nabidka />} />
-            <Route path="/o-atelieru" element={<OAtelieru />} />
-            <Route path="/vzdelavani" element={<Vzdelavani />} />
-            <Route path="/kontakt" element={<Kontakt />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </BrowserRouter>
-      </LangProvider>
-    </ContentProvider>
+    <HelmetProvider>
+      <ContentProvider>
+        <LangProvider>
+          <BrowserRouter>
+            <ScrollToTop />
+            <ConditionalNav />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/nabidka" element={<Nabidka />} />
+              <Route path="/o-atelieru" element={<OAtelieru />} />
+              <Route path="/vzdelavani" element={<Vzdelavani />} />
+              <Route path="/kontakt" element={<Kontakt />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </BrowserRouter>
+        </LangProvider>
+      </ContentProvider>
+    </HelmetProvider>
   );
 }
 

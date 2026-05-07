@@ -184,11 +184,17 @@
   pointer-events: none;
 }
 
+.adm-upload-btn {
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+}
 .adm-image-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: stretch;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 .adm-image-row .adm-input { flex: 1; }
 .adm-thumb {

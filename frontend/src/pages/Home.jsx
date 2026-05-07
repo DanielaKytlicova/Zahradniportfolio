@@ -3,12 +3,19 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function Home() {
   const { t } = useLang();
   const { home, HERO_BG } = useContent();
   return (
     <div className="page page-home active" data-testid="page-home">
+      <SEO
+        title={{ cz: "Zahrady, které dýchají", en: "Gardens that breathe" }}
+        description={home.sub}
+        path="/"
+        image={HERO_BG}
+      />
       <section className="hero" style={{ padding: 0 }}>
         <div className="hero-bg" style={{ backgroundImage: `url('${HERO_BG}')` }} />
         <div className="hero-overlay" />

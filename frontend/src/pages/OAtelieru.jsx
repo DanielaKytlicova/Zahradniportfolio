@@ -2,12 +2,19 @@ import { useLang } from "../contexts/LangContext";
 import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 export default function OAtelieru() {
   const { t } = useLang();
   const { about } = useContent();
   return (
     <div className="page active about-page" data-testid="page-about">
+      <SEO
+        title={{ cz: "O ateliéru", en: "About the studio" }}
+        description={about.body1}
+        path="/o-atelieru"
+        image={about.hero}
+      />
       <div className="page-hero">
         <div className="page-hero-bg" style={{ backgroundImage: `url('${about.hero}')` }} />
         <div className="page-hero-content">
