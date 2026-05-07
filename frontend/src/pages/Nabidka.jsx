@@ -4,6 +4,7 @@ import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 import SEO from "../components/SEO";
+import { asset } from "../utils/asset";
 
 export default function Nabidka() {
   const { t } = useLang();
@@ -38,7 +39,7 @@ export default function Nabidka() {
             <div className="process-item" key={step.num} data-testid={`process-item-${step.num}`}>
               <div
                 className="process-img"
-                style={{ backgroundImage: `url('${step.img}')` }}
+                style={{ backgroundImage: `url('${asset(step.img)}')` }}
               />
               <div className="process-num">{step.num}</div>
               <div className="process-content">

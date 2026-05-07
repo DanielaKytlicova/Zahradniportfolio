@@ -5,14 +5,14 @@ Postavit responzivní web (mobile-first) z dodaných HTML/textových podkladů +
 **Doplněno (2026-02-07):** Pořadí komponent v Nabídce — fotka vlevo přes celý blok. Jednoduchý admin na `/admin` chráněný heslem pro úpravu veškerého obsahu.
 
 ## Architecture
-- **Stack:** React (CRA) frontend + FastAPI backend + MongoDB (od 2026-02-07).
+- **Stack:** React (CRA) frontend + FastAPI backend + **JSON file storage** (od 2026-02-07, dříve MongoDB).
 - **Routing:** react-router-dom v7 (BrowserRouter).
 - **Public pages:** `/`, `/portfolio`, `/nabidka`, `/o-atelieru`, `/vzdelavani`, `/kontakt`.
 - **Admin page:** `/admin` (chráněno heslem, Nav skryt).
 - **Content data flow:**
   - `src/data/content.js` = výchozí (default) content (CZ/EN slovník, projekty, fotky URL).
   - `ContentContext` (`src/contexts/ContentContext.jsx`) načítá `GET /api/content` při startu, deep-merguje s defaulty a poskytuje všem stránkám přes `useContent()` hook.
-  - Backend ukládá content jako jeden JSON dokument v MongoDB collection `site_content` (_id="main").
+  - Backend ukládá content do souboru `${DATA_DIR}/content.json` (atomické rename).
 - **Lang context:** `LangProvider` v `src/contexts/LangContext.jsx` (CZ/EN switcher v navigaci).
 - **Styling:** custom CSS v `src/App.css` + `src/pages/Admin.css` (mobile-first).
 - **Logos:** transparent PNG v `public/logos/`.
@@ -51,6 +51,12 @@ Postavit responzivní web (mobile-first) z dodaných HTML/textových podkladů +
 - **sitemap.xml** + **robots.txt** v `/app/frontend/public/` (Disallow /admin).
 - **noindex** na /admin route.
 - **Testy:** 9/9 backend upload + SEO. 100% frontend SEO checks (po fixu duplicate description).
+
+## Implemented (2026-02-07, třetí várka — Railway hybrid deployment)
+- **`asset()` helper:** `/app/frontend/src/utils/asset.js` automaticky doplňuje `REACT_APP_BACKEND_URL` k path-relative URL `/api/files/...`, takže nahrané fotky fungují i když je frontend na Netlify a backend na Railway.
+- Použito ve všech místech, kde se zobrazují dynamické obrázky (Home, Portfolio, Nabidka, OAtelieru) a v `<SEO og:image>`.
+- **Railway config:** `/app/backend/Procfile`, `/app/backend/railway.json`, `/app/backend/runtime.txt`.
+- **DEPLOYMENT.md:** kompletní návod nasazení Hybrid (Netlify frontend + Railway backend + MongoDB) s checklistem, env variables a častými problémy.
 
 ## Color palette
 - Green `#607466`, Mint `#c3dac3`, Lavender `#e2a9f1`, Cream `#f7f4ef`, Black `#0d0d0d`

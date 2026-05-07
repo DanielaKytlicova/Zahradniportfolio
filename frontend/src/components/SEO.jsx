@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useLang } from "../contexts/LangContext";
+import { asset } from "../utils/asset";
 
 const SITE_URL = "https://ateliervenku.cz"; // Canonical site URL (update after deployment)
 const DEFAULT_OG = `${SITE_URL}/logos/venku-dark.png`;
@@ -24,9 +25,10 @@ export default function SEO({ title, description, path = "/", image, noindex = f
     ? `${titleStr} — Atelier Venku`
     : "Atelier Venku — Zahradní ateliér v Praze";
 
-  const ogImage = image
-    ? image.startsWith("http") ? image : `${SITE_URL}${image}`
-    : DEFAULT_OG;
+  const ogImageRaw = image ? asset(image) : DEFAULT_OG;
+  const ogImage = ogImageRaw && !ogImageRaw.startsWith("http")
+    ? `${SITE_URL}${ogImageRaw}`
+    : ogImageRaw;
 
   const url = `${SITE_URL}${path}`;
   const altLang = lang === "cz" ? "en" : "cz";
