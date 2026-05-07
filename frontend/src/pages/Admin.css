@@ -1,0 +1,268 @@
+/* ===== Admin editor — visually consistent with the public site ===== */
+.adm-loading {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ----- Login ----- */
+.adm-login-wrap {
+  min-height: 100vh;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+.adm-login {
+  width: 100%;
+  max-width: 380px;
+  background: var(--white);
+  padding: 40px 32px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.adm-login-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 22px;
+  color: var(--green);
+  letter-spacing: -0.005em;
+}
+.adm-login-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+.adm-error {
+  color: #b3261e;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ----- Wrapper / header ----- */
+.adm-wrap {
+  background: var(--cream);
+  min-height: 100vh;
+  padding: 100px 24px 140px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.adm-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+}
+.adm-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.adm-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: clamp(28px, 5vw, 44px);
+  color: var(--green);
+  letter-spacing: -0.005em;
+  margin-top: 6px;
+}
+.adm-header-right {
+  display: flex;
+  gap: 10px;
+}
+.adm-tip {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--gray);
+  margin-bottom: 28px;
+  max-width: 720px;
+  line-height: 1.7;
+}
+
+/* ----- Sections ----- */
+.adm-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.adm-section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.adm-section-title::-webkit-details-marker { display: none; }
+.adm-section-title::before {
+  content: "+";
+  font-size: 16px;
+  color: var(--gray);
+  width: 16px;
+  display: inline-block;
+}
+.adm-section[open] > .adm-section-title::before { content: "−"; }
+.adm-section-body {
+  padding: 12px 22px 28px;
+  border-top: 1px solid var(--border);
+}
+.adm-subhead {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin: 22px 0 12px;
+}
+
+/* ----- Fields ----- */
+.adm-field { margin-bottom: 18px; }
+.adm-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.adm-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.2s;
+  border-radius: 0;
+  resize: vertical;
+}
+.adm-input:focus { border-color: var(--green); }
+
+.adm-bilingual {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 700px) {
+  .adm-bilingual { grid-template-columns: 1fr 1fr; }
+}
+.adm-bi-col { position: relative; }
+.adm-flag {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--gray);
+  background: var(--white);
+  padding: 1px 6px;
+  pointer-events: none;
+}
+
+.adm-image-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+.adm-image-row .adm-input { flex: 1; }
+.adm-thumb {
+  width: 72px;
+  height: 48px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.adm-card {
+  border: 1px solid var(--border);
+  background: var(--cream);
+  padding: 18px 18px 6px;
+  margin-bottom: 14px;
+}
+.adm-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+
+/* ----- Buttons ----- */
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding: 12px 22px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+.adm-btn-primary { background: var(--green); color: var(--white); }
+.adm-btn-primary:hover:not(:disabled) { background: var(--green-light); }
+.adm-btn-primary:disabled { opacity: 0.7; cursor: default; }
+.adm-btn-ghost { color: var(--green); border-color: var(--border); }
+.adm-btn-ghost:hover { border-color: var(--green); }
+.adm-btn-danger { color: #b3261e; border-color: rgba(179,38,30,0.3); }
+.adm-btn-danger:hover { background: rgba(179,38,30,0.08); }
+.adm-btn-sm { padding: 6px 12px; font-size: 10px; }
+
+/* ----- Save bar ----- */
+.adm-savebar {
+  position: sticky;
+  bottom: 16px;
+  margin-top: 32px;
+  background: var(--black);
+  color: var(--white);
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+.adm-savebar .adm-btn-primary { background: var(--white); color: var(--black); }
+.adm-savebar .adm-btn-primary:hover:not(:disabled) { background: var(--cream); }
+.adm-toast {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+.adm-toast-ok { color: var(--mint); }
+.adm-toast-err { color: #f5a3a0; }

@@ -31,6 +31,6 @@
   "seed_data_creation": "None",
   "retest_needed": false,
   "should_main_agent_self_test": true,
-  "context_for_next_testing_agent": "Static React app on https://logo-web-build.preview.emergentagent.com. All data-testids work. Only known issue is the PHOTOS.garden9 undefined reference in project 3's gallery in src/data/content.js. The contact form is intentionally mocked (700ms setTimeout). Czech diacritics render fine throughout.",
+  "context_for_next_testing_agent": "Static React app on https://garden-atelier-2.preview.emergentagent.com. All data-testids work. Only known issue is the PHOTOS.garden9 undefined reference in project 3's gallery in src/data/content.js. The contact form is intentionally mocked (700ms setTimeout). Czech diacritics render fine throughout.",
   "rca of the issue": "Bug: project 3 gallery has broken image. Reproduction: open /portfolio, click portfolio-item-3, observe 2nd gallery tile. RCA: in /app/frontend/src/data/content.js, projects[2].gallery uses PHOTOS.garden9 but PHOTOS only defines garden1..garden8. Mitigation: change PHOTOS.garden9 to an existing key like PHOTOS.garden5 or define a new garden9 photo URL."
 }

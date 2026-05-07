@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useLang } from "../contexts/LangContext";
-import { kontakt } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 
 export default function Kontakt() {
   const { t, lang } = useLang();
+  const { kontakt } = useContent();
   const [form, setForm] = useState({ name: "", email: "", topic: "", message: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent
 

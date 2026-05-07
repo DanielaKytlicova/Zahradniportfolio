@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Leaf, BookOpen, Home as HomeIcon } from "lucide-react";
 import { useLang } from "../contexts/LangContext";
-import { vzdelavani } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 
@@ -13,6 +13,7 @@ const icons = {
 
 export default function Vzdelavani() {
   const { t } = useLang();
+  const { vzdelavani } = useContent();
   return (
     <div className="page active deti-page" data-testid="page-vzdelavani">
       <div className="deti-hero">

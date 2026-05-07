@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { projects } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import Footer from "../components/Footer";
 
 export default function Portfolio() {
   const { t, lang } = useLang();
+  const { projects } = useContent();
   const [activeId, setActiveId] = useState(null);
   const active = projects.find((p) => p.id === activeId);
 

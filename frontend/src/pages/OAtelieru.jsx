@@ -1,10 +1,11 @@
 import { useLang } from "../contexts/LangContext";
-import { about } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 
 export default function OAtelieru() {
   const { t } = useLang();
+  const { about } = useContent();
   return (
     <div className="page active about-page" data-testid="page-about">
       <div className="page-hero">

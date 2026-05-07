@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
-import { home, HERO_BG } from "../data/content";
+import { useContent } from "../contexts/ContentContext";
 import RichText from "../components/RichText";
 import Footer from "../components/Footer";
 
 export default function Home() {
   const { t } = useLang();
+  const { home, HERO_BG } = useContent();
   return (
     <div className="page page-home active" data-testid="page-home">
       <section className="hero" style={{ padding: 0 }}>

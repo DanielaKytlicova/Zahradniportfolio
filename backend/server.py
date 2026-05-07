@@ -1,13 +1,12 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Header, Body
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
-import uuid
+from pydantic import BaseModel
+from typing import Dict, Any, Optional
 from datetime import datetime, timezone
 
 
@@ -19,6 +18,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Admin password (single pre-set password, stored in backend env)
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'venku-admin-2026')
+
 # Create the main app without a prefix
 app = FastAPI()
 
@@ -26,45 +28,46 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-# Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Atelier Venku API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+# ===== Content (CMS) endpoints =====
+
+@api_router.get("/content")
+async def get_content():
+    """Return persisted site content. Empty object if nothing saved yet."""
+    doc = await db.site_content.find_one({"_id": "main"}, {"_id": 0, "updated_at": 0})
+    return doc or {}
+
+
+class LoginBody(BaseModel):
+    password: str
+
+
+@api_router.post("/admin/login")
+async def admin_login(body: LoginBody):
+    if body.password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Invalid password")
+    return {"ok": True}
+
+
+@api_router.put("/admin/content")
+async def update_content(
+    content: Dict[str, Any] = Body(...),
+    x_admin_password: Optional[str] = Header(None, alias="X-Admin-Password"),
+):
+    if x_admin_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    payload = {**content, "updated_at": datetime.now(timezone.utc).isoformat()}
+    await db.site_content.update_one(
+        {"_id": "main"},
+        {"$set": payload},
+        upsert=True,
+    )
+    return {"ok": True}
+
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -83,6 +86,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
