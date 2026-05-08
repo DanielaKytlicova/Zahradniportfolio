@@ -135,10 +135,15 @@ async def serve_file(path: str):
 # Include the router in the main app
 app.include_router(api_router)
 
+# Parse CORS origins robustly (trim whitespace, drop empties, strip stray quotes)
+_raw_origins = os.environ.get('CORS_ORIGINS', '*')
+cors_origins = [o.strip().strip('"').strip("'") for o in _raw_origins.split(',')]
+cors_origins = [o for o in cors_origins if o]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -153,6 +158,7 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup():
+    logger.info(f"CORS allow_origins: {cors_origins}")
     try:
         init_storage()
         logger.info("Object storage initialized")
