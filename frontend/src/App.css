@@ -58,7 +58,7 @@ button { font-family: inherit; }
 }
 .nav-logo-img-light,
 .nav-logo-img-dark {
-  height: 120px;
+  height: 180px;
   width: auto;
   display: block;
   transition: opacity var(--transition), height var(--transition);
