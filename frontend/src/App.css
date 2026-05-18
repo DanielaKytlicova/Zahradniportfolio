@@ -1026,7 +1026,7 @@ footer {
   .nav-links { display: flex; }
   .hamburger { display: none; }
   .nav-logo-img-light,
-  .nav-logo-img-dark { height: 88px; }
+  .nav-logo-img-dark { height: 180px; }
   .site-nav.scrolled .nav-logo-img-light,
   .site-nav.scrolled .nav-logo-img-dark { height: 60px; }
   .hero-scroll { display: flex; right: 56px; bottom: 96px; }
