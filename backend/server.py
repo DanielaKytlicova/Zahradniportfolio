@@ -132,6 +132,35 @@ async def serve_file(path: str):
     )
 
 
+@api_router.get("/admin/health")
+async def admin_health(
+    x_admin_password: Optional[str] = Header(None, alias="X-Admin-Password"),
+):
+    """Diagnostic endpoint — shows where data is stored and if it's writable."""
+    if x_admin_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    from db import CONTENT_FILE, DATA_DIR
+    can_write = False
+    err = None
+    try:
+        probe = DATA_DIR / ".write_probe"
+        probe.write_text("ok")
+        probe.unlink()
+        can_write = True
+    except Exception as e:
+        err = str(e)
+    return {
+        "data_dir": str(DATA_DIR),
+        "content_file": str(CONTENT_FILE),
+        "content_file_exists": CONTENT_FILE.exists(),
+        "content_file_size": CONTENT_FILE.stat().st_size if CONTENT_FILE.exists() else 0,
+        "data_dir_writable": can_write,
+        "write_error": err,
+        "env_DATA_DIR": os.environ.get("DATA_DIR"),
+        "cors_origins": cors_origins,
+    }
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -158,7 +187,19 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup():
+    from db import CONTENT_FILE, DATA_DIR
     logger.info(f"CORS allow_origins: {cors_origins}")
+    logger.info(f"DATA_DIR = {DATA_DIR}")
+    logger.info(f"CONTENT_FILE = {CONTENT_FILE} (exists={CONTENT_FILE.exists()})")
+    # Verify writability — fail fast if volume not mounted
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        probe = DATA_DIR / ".write_probe"
+        probe.write_text("ok")
+        probe.unlink()
+        logger.info(f"DATA_DIR is writable ✓")
+    except Exception as e:
+        logger.error(f"!!! DATA_DIR NOT WRITABLE — admin changes will be LOST on redeploy: {e}")
     try:
         init_storage()
         logger.info("Object storage initialized")
