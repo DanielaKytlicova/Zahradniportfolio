@@ -1047,6 +1047,7 @@ footer {
   .nav-links { display: flex; }
   .hamburger { display: none; }
   .nav-logo-img-light,
+  .nav-logo-img-dark { height: 200px; }
   /*.nav-logo-img-dark { height: 88px; }*/
   .nav-logo-img-light { 
   height: 200px; 
@@ -1055,7 +1056,7 @@ footer {
   height: 240px; 
 }
   .site-nav.scrolled .nav-logo-img-light,
-  .site-nav.scrolled .nav-logo-img-dark { height: 60px; }
+  .site-nav.scrolled .nav-logo-img-dark { height: 120px; }
   .hero-scroll { display: flex; right: 56px; bottom: 96px; }
   .hero-content { padding: 0 56px 96px; }
   .page-hero-content { padding: 0 56px 64px; }
