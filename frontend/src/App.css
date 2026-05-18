@@ -1096,3 +1096,23 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
+/* Logo size override */
+.site-nav .nav-logo-img-light {
+  height: 200px !important;
+  width: auto !important;
+}
+
+.site-nav .nav-logo-img-dark {
+  height: 240px !important;
+  width: auto !important;
+}
+
+.site-nav.scrolled .nav-logo-img-dark {
+  height: 140px !important;
+  width: auto !important;
+}
+
+.site-nav.scrolled .nav-logo-img-light {
+  height: 140px !important;
+  width: auto !important;
+}
