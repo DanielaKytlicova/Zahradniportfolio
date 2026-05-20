@@ -24,7 +24,7 @@ export default function Footer() {
       </nav>
       <div className="footer-copy">
         © {new Date().getFullYear()} Atelier Venku<br />
-        Praha, Česká republika
+        Liberec, Česká republika
       </div>
     </footer>
   );
