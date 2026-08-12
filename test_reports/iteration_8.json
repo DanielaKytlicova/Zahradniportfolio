@@ -1,0 +1,28 @@
+{
+  "summary": "Admin E2E for Vzdělávání (Education) CMS — 8/8 flows PASS. EduEditor is now correctly mounted in Admin.jsx (verified after login). All three required sections render: admin-section-edu-page, admin-section-edu-categories, admin-section-edu-programs. Seed shows 3 categories (edukacni-programy, skoly-v-prirode, workshopy) and 6 programs (tajemstvi-ziveho-lesa, o-vajicku-se-vsim-vsudy, do-lesa-na-pozorovanou, skola-v-prirode-liberec, vazani-adventnich-vencu-na-miru, vazani-adventnich-vencu-ceska-chaloupka). Verified end-to-end: (1) status=hidden on 'O vajíčku se vším všudy' removes card from /vzdelavani and shows 'Program nenalezen' + edu-back-offer on /vzdelavani/o-vajicku-se-vsim-vsudy; restored to published. (2) featured OFF on 'Tajemství živého lesa' removes ' · hlavní' from summary; restored. (3) publishFrom=2099-01-01 on 'Do lesa na pozorovanou' hides card; clearing date restores it. (4) External CTA (type=external, value=https://example.com/rezervace) renders on detail as edu-detail-cta-* with target=_blank. (5) File CTA: uploaded PDF via admin-edu-cta-file-0-3-file → returns /api/files/venku/docs/<hash>.pdf; renders on detail as edu-detail-cta-3 pointing at REACT_APP_BACKEND_URL + /api/files/... and the URL returns 200 with the correct content-length (417 bytes). (6) Reorder ↓ on program 4 swaps 'Vázání adventních věnců na míru' and '…na České chaloupce' in category workshopy on /vzdelavani. (7) '+ Přidat kategorii' creates a new admin-edu-category-3 card; '+ Přidat program' creates admin-edu-program-6 with slug generation via 'Generovat' (title 'TEST Program A' → 'test-program-a'), category assignment via admin-edu-program-cat-6, status=published, featured ON. After Save the new category (edu-cat-test-kategorie) and new card (edu-card-test-program-a) both appear on /vzdelavani. (8) admin-save shows admin-save-ok toast on every PUT. Seed state RESTORED by rewriting /app/backend/data/content.json from the pre-test backup — public /vzdelavani now shows all 6 seeded programs, feature card skola-v-prirode-liberec, no TEST cat/prog, and no external CTA remnant on Tajemství živého lesa detail.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/vzdelavani/<slug> not-found and anchor", "issues": ["(Pre-existing, still not addressed from iter7) Not-found subtitle contrast on cream is low; anchor to #nabidka-programu hides section title behind the fixed nav — add scroll-margin-top."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_edu_backend.py", "/app/test_reports/pytest/iteration7_edu.xml"],
+  "action_items": [
+    "OPTIONAL polish (deferred from iter7, not blocking): scroll-margin-top on #nabidka-programu; strengthen contrast on ProgramDetail not-found subtitle + back button label."
+  ],
+  "critical_code_review_comments": [
+    "Admin.jsx has grown to ~575 lines. Splitting sections (Home/Portfolio/Services/About/Kontakt) into per-section components similar to EduEditor would keep future edits from repeating the parallel-edit race that dropped EduEditor's mount in iter7.",
+    "EduEditor 'move' mutation re-numbers .order (arr.forEach idx+1) but reads/writes state by array index; if any code path elsewhere relies on stable p.order after remove, ordering can drift because remove does not renumber. Consider renumbering on remove too (minor).",
+    "File CTA testid is admin-edu-cta-file-{i}-{ci}-file — clean; but the enclosing 'DocField' URL input is admin-edu-cta-file-{i}-{ci}. Both work. Consistent with attachments' admin-edu-att-file-*.",
+    "PUT /api/admin/content receives the full content blob every save (frontend hydrates from defaults). Backend content.json only stores keys the admin actually edited. This works via ContentContext deepMerge, but a full save now materializes all defaults into content.json permanently. Consider persisting only diffs or normalizing on read."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (10/10 from iter7 pytest — not re-run)", "frontend": "100% (8/8 admin E2E flows + public verification)"},
+  "test_credentials": "Admin password: venku-admin-2026 (POST /api/admin/login; X-Admin-Password header).",
+  "seed_data_creation": "During E2E: created 1 TEST kategorie + 1 TEST Program A (published+featured), added 2 CTAs on program 0 (external https://example.com/rezervace + file /api/files/venku/docs/<hash>.pdf), reordered workshops, toggled statuses/featured/publishFrom on programs 0/1/2. FULLY RESTORED at end by copying /tmp/content_backup.json → /app/backend/data/content.json (backup captured before any mutation). Uploaded object-store PDF (417B) remains in storage (no delete API — accepted MVP behaviour, orphaned).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Full admin edu CMS is verified. If future changes touch Admin.jsx or EduEditor.jsx, re-run the flow in /app/test_reports/iteration_8.json summary. Backup restore pattern: before any admin E2E on file-based content, cp /app/backend/data/content.json /tmp/content_backup.json; after tests cp back and hit / to trigger revalidate."
+}

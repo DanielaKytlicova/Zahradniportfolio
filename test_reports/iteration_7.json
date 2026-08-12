@@ -1,0 +1,43 @@
+{
+  "summary": "Tested new /vzdelavani (Education) CMS. Backend: 10/10 pass (login, GET/PUT content roundtrip with edu payload, image upload+serve, PDF upload+serve, 415 bad-ext, 401 no-auth). Public frontend: /vzdelavani renders all expected sections and testids (hero, intro, where, offer, category groups cat-edukacni-programy & cat-workshopy, all 3 program cards, feature block skola-v-prirode-liberec, benefits, collab with 'Máte zájem o spolupráci?'). Hero anchor CTA smooth-scrolls to #nabidka-programu. Program detail /vzdelavani/tajemstvi-ziveho-lesa renders H1, perex, 'Na co se společně podíváme?' block, practical info panel with targetGroup/duration/price, and CTA. Workshop detail (vazani-adventnich-vencu-na-miru) and school-in-nature detail (skola-v-prirode-liberec) both render via the same dynamic template. Non-existent slug shows 'Program nenalezen' with working edu-back-offer link. No empty headings or empty <dd> values on any detail page. CRITICAL BLOCKER: admin edu CMS is NOT wired in — /app/frontend/src/components/admin/EduEditor.jsx exists but is never imported or rendered by /app/frontend/src/pages/Admin.jsx (0 references to EduEditor / 'edu' anywhere in Admin.jsx). Therefore all admin-section-edu-* testids are absent and the entire admin E2E test group (create category, create program, toggle status/featured, seasonal publishing, external/file CTAs, reorder) cannot be executed. All admin edits must be done via direct PUT /api/admin/content until Admin.jsx renders <EduEditor/>.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Admin editor (Admin.jsx)", "issue": "EduEditor is not imported/rendered in Admin.jsx. The three required admin sections (admin-section-edu-page, admin-section-edu-categories, admin-section-edu-programs) do not exist in the DOM after login — the education CMS is not manageable via /admin.", "selector": "[data-testid='admin-section-edu-page']", "priority": "CRITICAL"},
+      {"component": "ProgramDetail not-found state", "issue": "'Tento program neexistuje…' subtitle text has very low contrast against the cream background (barely readable). The 'Zpět na nabídku' button label also blends into its light background.", "selector": ".edu-notfound", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Admin → Edu content persistence", "issue": "Admin UI has no controls to edit edu content, so admins cannot create/update/publish/hide programs, cannot set featured/publish dates, cannot add CTAs or attachments. Backend supports it fully (PUT /api/admin/content with full blob), so the gap is purely on the admin frontend wiring.", "affected_selectors": ["admin-section-edu-page","admin-section-edu-categories","admin-section-edu-programs","admin-add-edu-category","admin-add-edu-program","admin-edu-program-title-*","admin-edu-program-slug-*","admin-edu-program-cat-*","admin-edu-program-status-*","admin-edu-program-featured-*","admin-edu-program-from-*"]}
+    ],
+    "design_issues": [
+      {"screen": "/vzdelavani/<slug> anchor / detail", "issues": ["Anchor scroll via edu-hero-anchor lands at offset ~106px (fixed nav overlaps section title); consider scroll-margin-top on #nabidka-programu.", "Not-found page uses very light text on cream — reduces legibility."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_edu_backend.py",
+    "/app/test_reports/pytest/iteration7_edu.xml"
+  ],
+  "action_items": [
+    "CRITICAL: Import and render <EduEditor edu={content.edu} setEdu={...} save={save} savedOk={...} /> inside Editor in /app/frontend/src/pages/Admin.jsx (below the existing sections and above the save bar). The component already exists at /app/frontend/src/components/admin/EduEditor.jsx and expects to mutate content.edu through a setter. Once wired, all admin-section-edu-* testids will appear.",
+    "After wiring, verify: (a) creating category+program via admin-add-edu-category / admin-add-edu-program shows up on /vzdelavani; (b) status=hidden and future publishFrom hide from public; (c) featured OFF removes card from featured listing; (d) external + file CTAs render on detail page; (e) up/down reorder reflects on public page.",
+    "Minor: add scroll-margin-top: 96px (or matching nav height) to #nabidka-programu so anchor lands under the fixed nav.",
+    "Minor: strengthen text contrast on the ProgramDetail not-found state ('Program nenalezen' subtitle + back button label)."
+  ],
+  "critical_code_review_comments": [
+    "EduEditor.jsx (~350 lines) is orphan code — not wired to Admin.jsx. Any dev testing admin flow will find no edu controls. This is the single blocking issue for the review request.",
+    "ContentContext deepMerge REPLACES arrays wholesale — good, but means admin must PUT the full edu.categories/programs arrays every save; make sure EduEditor keeps unchanged programs intact when adding one (currently it does via mutate((e)=>e.programs.push(...))).",
+    "ProgramDetail.jsx: seoTitle/seoDesc use `{cz:seoTitle,en:seoTitle}` which duplicates the CZ text into the EN slot; if a program has a distinct English title, the EN SEO won't localize. Consider passing `program.seo?.title || program.title` (both are already localized objects) directly.",
+    "utils/edu.js publishedCategories filters `c.published !== false` — categories with no `published` field remain visible. That's intentional but worth a test.",
+    "Admin.jsx now at 585 lines — pushed past the earlier 567 mark; splitting Editor into per-section files is increasingly warranted."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_edu_backend.py (new — 10 tests)"
+  ],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "public 100% (12/12 flows); admin 0% (blocked — EduEditor not mounted)"},
+  "test_credentials": "Admin password: venku-admin-2026 (POST /api/admin/login body {password}; X-Admin-Password header for PUT/upload).",
+  "seed_data_creation": "No permanent seed data written. During test_put_edu_roundtrip the content.json edu key is briefly replaced with TEST_ values and restored to its pre-test state (or removed if not previously present). Two throw-away images and one throw-away PDF were uploaded to object storage — no delete API exists (accepted MVP behaviour).",
+  "retest_needed": true,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "Backend is solid — reuse /app/backend/tests/test_edu_backend.py + test_admin_content.py + test_upload_seo.py as regression. Public /vzdelavani + detail templates are all working via default seed content from /app/frontend/src/data/content.js. The blocker is that EduEditor.jsx is never rendered; once the main agent adds it to Admin.jsx, run the admin E2E block from the review request (login → add category → add program with slug + status=published + featured=true → save → verify on /vzdelavani; then status=hidden → verify detail shows 'Program nenalezen'; then future publishFrom; then featured off; then external CTA + file-CTA upload; then reorder). After each mutation, restore original state to keep default seed intact.",
+  "rca of the issue": "Missing import/render: /app/frontend/src/pages/Admin.jsx does not reference EduEditor. Verified via `grep -c EduEditor /app/frontend/src/pages/Admin.jsx` → 0, and `grep -in edu /app/frontend/src/pages/Admin.jsx` → 0 hits. Reproduction: log in at /admin with venku-admin-2026 → scroll the editor — only the pre-existing sections (Nav, Home, Portfolio, Nabidka, Kontakt, …) are rendered; no 'Vzdělávání — hlavní stránka / kategorie / programy' sections appear. Mitigation: import EduEditor at top of Admin.jsx and mount it inside the Editor component, passing `edu={content.edu}` and a setter that updates content.edu via the existing setContent helper. All admin-* testids are already emitted correctly by EduEditor.jsx so no changes needed there."
+}
