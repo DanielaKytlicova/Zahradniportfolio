@@ -430,3 +430,52 @@
   .edu-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; }
   .edu-detail-hero { padding: 0 56px 60px; }
 }
+
+/* ===== TAB SWITCHER ===== */
+.edu-tabs-wrap { padding-top: 48px; padding-bottom: 8px; scroll-margin-top: 90px; }
+.edu-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.edu-tab {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--green);
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 16px 24px;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  text-align: center;
+}
+.edu-tab:hover { border-color: var(--green); }
+.edu-tab:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.edu-tab.active { background: var(--green); color: var(--white); border-color: var(--green); }
+
+/* ===== MATERIALS ===== */
+.edu-mat-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 36px; }
+.edu-mat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 24px 22px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.edu-mat-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--green); margin-bottom: 6px; line-height: 1.2; }
+.edu-mat-desc { font-size: 13.5px; font-weight: 300; line-height: 1.8; color: var(--gray); margin-bottom: 8px; }
+.edu-mat-type { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+.edu-mat-soon { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray); }
+
+@media (min-width: 700px) {
+  .edu-tabs { flex-direction: row; flex-wrap: wrap; }
+  .edu-tab { flex: 1; min-width: 200px; }
+  .edu-mat { flex-direction: row; justify-content: space-between; align-items: center; padding: 24px 26px; }
+}

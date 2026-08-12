@@ -345,6 +345,29 @@ export default function EduEditor({ data, setData, setPath, password, uploadDoc,
         ))}
         <button type="button" className="adm-btn adm-btn-ghost" data-testid="admin-add-edu-program" onClick={() => mutate((e) => e.programs.push(newProgram()))}>+ Přidat program</button>
       </Section>
+
+      {/* ===== MATERIÁLY KE STAŽENÍ ===== */}
+      <Section title="Vzdělávání — materiály ke stažení" testid="admin-section-edu-materials">
+        <div className="adm-tip" style={{ marginBottom: 18 }}>Soubory ke stažení (PDF, pracovní listy). Zobrazují se v záložce „Materiály ke stažení“ na stránce Vzdělávání.</div>
+        {(edu.materials || []).map((m, i) => (
+          <div className="adm-card" key={m.id || i} data-testid={`admin-edu-material-${i}`}>
+            <div className="adm-card-head">
+              <strong>Materiál #{i + 1}</strong>
+              <MiniBtns
+                onUp={() => mutate((e) => { if (!e.materials) e.materials = []; move(e.materials, i, -1); })}
+                onDown={() => mutate((e) => { if (!e.materials) e.materials = []; move(e.materials, i, 1); })}
+                onRemove={() => mutate((e) => { if (!e.materials) e.materials = []; e.materials.splice(i, 1); })}
+              />
+            </div>
+            <TextField label="Název" value={m.name} onChange={(v) => setE(["materials", i, "name"], v)} />
+            <TextField label="Popis" value={m.description} onChange={(v) => setE(["materials", i, "description"], v)} multiline />
+            <PlainField label="Typ (např. PDF, pracovní list)" value={m.type} onChange={(v) => setE(["materials", i, "type"], v)} />
+            <DocField label="Soubor" value={m.file} onChange={(url) => setE(["materials", i, "file"], url)} uploadDoc={uploadDoc} testid={`admin-edu-material-file-${i}`} />
+            <Check label="Publikováno (zobrazit na webu)" checked={m.published !== false} onChange={(v) => setE(["materials", i, "published"], v)} testid={`admin-edu-material-pub-${i}`} />
+          </div>
+        ))}
+        <button type="button" className="adm-btn adm-btn-ghost" data-testid="admin-add-edu-material" onClick={() => mutate((e) => { if (!e.materials) e.materials = []; e.materials.push({ id: "mat-" + uid(), name: { cz: "Nový materiál", en: "New material" }, description: { cz: "", en: "" }, type: "PDF", file: "", published: true }); })}>+ Přidat materiál</button>
+      </Section>
     </>
   );
 }

@@ -338,6 +338,7 @@ export const edu = {
     btnType:  "internal",
     btnValue: "/kontakt",
   },
+  materials: [],
   categories: [
     { id: "cat-edu",      slug: "edukacni-programy", name: { cz: "Edukační programy", en: "Educational programmes" }, description: { cz: "Interaktivní zážitkové programy v přírodě pro školky a školy.", en: "Interactive experiential programmes in nature for kindergartens and schools." }, image: EDU_IMG.eduCat,   order: 1, published: true },
     { id: "cat-skola",    slug: "skoly-v-prirode",   name: { cz: "Školy v přírodě",   en: "Schools in nature" },       description: { cz: "Několikadenní pobyty, kde se příroda stane učebnou i hřištěm.", en: "Multi-day stays where nature becomes a classroom and a playground." }, image: EDU_IMG.mountains, order: 2, published: true },
