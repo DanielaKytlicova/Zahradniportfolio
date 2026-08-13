@@ -10,6 +10,7 @@ import Portfolio from "@/pages/Portfolio";
 import Nabidka from "@/pages/Nabidka";
 import OAtelieru from "@/pages/OAtelieru";
 import Vzdelavani from "@/pages/Vzdelavani";
+import ProgramDetail from "@/pages/ProgramDetail";
 import Kontakt from "@/pages/Kontakt";
 import Admin from "@/pages/Admin";
 
@@ -33,6 +34,7 @@ function App() {
               <Route path="/nabidka" element={<Nabidka />} />
               <Route path="/o-atelieru" element={<OAtelieru />} />
               <Route path="/vzdelavani" element={<Vzdelavani />} />
+              <Route path="/vzdelavani/:slug" element={<ProgramDetail />} />
               <Route path="/kontakt" element={<Kontakt />} />
               <Route path="/admin" element={<Admin />} />
             </Routes>

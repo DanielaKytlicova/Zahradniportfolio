@@ -13,6 +13,7 @@ const defaultContent = {
   processList: defaults.processList,
   about: defaults.about,
   vzdelavani: defaults.vzdelavani,
+  edu: defaults.edu,
   kontakt: defaults.kontakt,
 };
 

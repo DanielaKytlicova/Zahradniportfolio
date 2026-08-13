@@ -251,3 +251,224 @@ export const kontakt = {
     { value: "other", label: { cz: "Jiné", en: "Other" } },
   ],
 };
+
+/* ============================================================
+   VZDĚLÁVÁNÍ — nový systém (kategorie, programy, workshopy)
+   Ukládá se pod klíčem `edu`, aby nekolidoval s dřívějším
+   obsahem. Frontend zobrazuje pouze publikované položky
+   a needuplňuje prázdná pole.
+   ============================================================ */
+const EDU_IMG = {
+  hero:      "https://images.unsplash.com/photo-1606474226448-4aa808468efc?w=1600&q=80",
+  kinder:    "https://images.unsplash.com/photo-1751158112093-b736fe920027?w=1200&q=80",
+  forestPath:"https://images.unsplash.com/photo-1597201423947-3e0028337902?w=1200&q=80",
+  forest:    "https://images.unsplash.com/photo-1566231270035-0aaca1fd2bbf?w=1200&q=80",
+  nest:      "https://images.unsplash.com/photo-1772401750361-0a9baf3e45de?w=1200&q=80",
+  observe:   "https://images.unsplash.com/photo-1565964249053-7f30b7cdba09?w=1200&q=80",
+  mountains: "https://images.unsplash.com/photo-1764093260290-161c6f370479?w=1400&q=80",
+  wreath:    "https://images.unsplash.com/photo-1612528910395-0297ec160cc8?w=1200&q=80",
+  wreathMake:"https://images.unsplash.com/photo-1608308309134-f46435264ba8?w=1200&q=80",
+  eduCat:    "https://images.unsplash.com/photo-1505635725851-c2cfe9e29112?w=1200&q=80",
+};
+
+const contactCta = () => ({
+  id: "cta-" + Math.random().toString(36).slice(2, 8),
+  label: { cz: "Napsat poptávku", en: "Send an enquiry" },
+  type: "internal",
+  value: "/kontakt",
+  order: 1,
+});
+
+export const edu = {
+  hero: {
+    badge:   { cz: "Venku · vzdělávání", en: "Outdoors · education" },
+    title:   { cz: "Poznávej přírodu<br>všemi smysly.", en: "Explore nature<br>with all your senses." },
+    sub:     {
+      cz: "Zážitkové programy, školy v přírodě a workshopy pro školky, školy i rodiny — venku, hravě a s ohledem k přírodě.",
+      en: "Experiential programmes, schools in nature and workshops for kindergartens, schools and families — outdoors, playful and close to nature.",
+    },
+    bgImage: EDU_IMG.hero,
+  },
+  intro: {
+    label: { cz: "Co nabízíme", en: "What we offer" },
+    title: { cz: "Programy, které<br>probouzejí zvídavost.", en: "Programmes that<br>awaken curiosity." },
+    text:  {
+      cz: "Naše programy podporují aktivní pobyt v přírodě a přímé prožitky dětí. Rozvíjejí motoriku, smysly a spolupráci — a zároveň budují vztah k přírodě a ekologické povědomí.",
+      en: "Our programmes support active time in nature and children's direct experiences. They develop motor skills, senses and cooperation — while building a relationship with nature and ecological awareness.",
+    },
+  },
+  where: {
+    label: { cz: "Kde programy probíhají", en: "Where programmes take place" },
+    title: { cz: "U vás, nebo venku v přírodě.", en: "At your place, or out in nature." },
+    intro: {
+      cz: "Edukační programy probíhají buď přímo u vás ve škole či školce, nebo venku v přírodě. Záleží na programu, který si vyberete.",
+      en: "Educational programmes take place either directly at your school or kindergarten, or outdoors in nature, depending on the programme you choose.",
+    },
+    atSchool: {
+      title: { cz: "Přijedeme za vámi", en: "We come to you" },
+      text:  { cz: "S vybraným programem přijedu přímo do vaší školy nebo školky a přivezu s sebou vše potřebné.", en: "I come directly to your school or kindergarten with the selected programme and bring everything needed." },
+      image: EDU_IMG.kinder,
+    },
+    outdoors: {
+      title: { cz: "Vyrazíme do přírody", en: "Out into nature" },
+      text:  { cz: "Za venkovním programem přijedete vy za mnou, přímo do přírody. Programy probíhají v Liberci–Rudolfově. Autobusová linka č. 18 vás doveze na zastávku Rudolfov (u České chalupy), odkud se společně vydáme za přírodním dobrodružstvím.", en: "For outdoor programmes, you come to me in nature in Liberec–Rudolfov. Bus no. 18 goes to Rudolfov (u České chalupy), where our outdoor adventure begins." },
+      image: EDU_IMG.forestPath,
+    },
+  },
+  offer: {
+    label: { cz: "Nabídka programů", en: "Our programmes" },
+    title: { cz: "Vyberte si program", en: "Choose a programme" },
+    text:  { cz: "Každý program přizpůsobíme věku dětí i vašim přáním — tématem, délkou i místem.", en: "We tailor each programme to the children's age and your wishes — theme, length and place." },
+  },
+  collaboration: {
+    title:    { cz: "Máte zájem o spolupráci?", en: "Interested in collaborating?" },
+    text:     { cz: "Napište mi — ráda připravím program přímo pro vaši třídu nebo skupinu.", en: "Write to me — I'll gladly prepare a programme for your class or group." },
+    btnLabel: { cz: "Napište mi", en: "Write to me" },
+    btnType:  "internal",
+    btnValue: "/kontakt",
+  },
+  materials: [],
+  categories: [
+    { id: "cat-edu",      slug: "edukacni-programy", name: { cz: "Edukační programy", en: "Educational programmes" }, description: { cz: "Interaktivní zážitkové programy v přírodě pro školky a školy.", en: "Interactive experiential programmes in nature for kindergartens and schools." }, image: EDU_IMG.eduCat,   order: 1, published: true },
+    { id: "cat-skola",    slug: "skoly-v-prirode",   name: { cz: "Školy v přírodě",   en: "Schools in nature" },       description: { cz: "Několikadenní pobyty, kde se příroda stane učebnou i hřištěm.", en: "Multi-day stays where nature becomes a classroom and a playground." }, image: EDU_IMG.mountains, order: 2, published: true },
+    { id: "cat-workshop", slug: "workshopy",         name: { cz: "Workshopy",          en: "Workshops" },               description: { cz: "Tvořivé dílny pro rodiny, přátele i firmy — sezónně laděné.", en: "Creative workshops for families, friends and companies — seasonal." }, image: EDU_IMG.wreath,    order: 3, published: true },
+  ],
+  programs: [
+    {
+      id: "prog-tajemstvi", slug: "tajemstvi-ziveho-lesa", categoryId: "cat-edu",
+      status: "published", featured: true, order: 1, publishFrom: "", publishTo: "",
+      title: { cz: "Tajemství živého lesa", en: "Secrets of the living forest" },
+      perex: { cz: "Co by se stalo, kdyby z lesa zmizely houby, housenky nebo staré stromy? Program dětem představuje princip biodiverzity a vzájemné propojenosti organismů v lese.", en: "What would happen if fungi, caterpillars or old trees disappeared from the forest? The programme introduces biodiversity and the interconnectedness of forest organisms." },
+      mainImage: EDU_IMG.forest, gallery: [EDU_IMG.forestPath],
+      mainText: {
+        cz: "Co by se stalo, kdyby z lesa zmizely houby? Vadilo by něčemu, kdyby v něm nebyly housenky? A potřebuje les opravdu staré stromy, spadané listí nebo drobné živočichy? Vydejme se společně do lesa, ve kterém má každý své místo. Prostřednictvím příběhu, her, pozorování a badatelských aktivit děti postupně odhalí, že rostliny, živočichové, houby i další organismy nežijí každý sám za sebe, ale jsou propojeni spletitou sítí vztahů. Program dětem představuje princip biodiverzity a vzájemné propojenosti organismů a vede je k vnímání přírody jako pestrého celku, ve kterém může mít význam i to, co na první pohled vypadá nepotřebně.",
+        en: "An interactive forest journey developing children's curiosity and attention. Children learn to recognise trees and animals, discover their life cycles and interconnections. The programme emphasises active movement and sensory perception of nature.",
+      },
+      targetGroup: { cz: "Děti MŠ a I. st. ZŠ", en: "Kindergarten and primary school children" },
+      location:    { cz: "Přímo u vás ve škole; v průběhu jednoho dne minimálně pro 3 třídy/skupiny.", en: "At your school; at least 3 classes/groups during one day." },
+      duration:    { cz: "45 minut pro každou třídu", en: "45 minutes per class" },
+      capacity:    { cz: "", en: "" },
+      age:         { cz: "MŠ a I. st. ZŠ", en: "Kindergarten and primary school" },
+      price:       { cz: "5 100 Kč / 3 třídy", en: "CZK 5,100 / 3 classes" },
+      season:      { cz: "", en: "" },
+      materials:   { cz: "Veškeré potřebné pomůcky a materiály přivezu s sebou.", en: "All necessary aids and materials are provided." },
+      blocks: [
+        { id: "b-taj-1", type: "text", heading: { cz: "Jak program probíhá?", en: "How does the programme work?" }, text: { cz: "Program probíhá v jedné vyhrazené učebně přímo ve vaší škole. Pro každou třídu je připraven samostatný program v délce 1 vyučovací hodiny (45 minut). Obsah i náročnost aktivit přizpůsobuji věku dětí.", en: "The programme takes place in one dedicated classroom at your school. Each class has a separate 45-minute session and activities are adapted to the children’s age." }, image: "", caption: { cz: "", en: "" } },
+      ],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+    {
+      id: "prog-vajicko", slug: "o-vajicku-se-vsim-vsudy", categoryId: "cat-edu",
+      status: "published", featured: true, order: 2, publishFrom: "", publishTo: "",
+      title: { cz: "O vajíčku se vším všudy", en: "All about the egg" },
+      perex: { cz: "Na návštěvu tentokrát nepřijedeme sami – společnost nám bude dělat živá slepička, kterou si děti budou moci zblízka pozorovat. Společně se vydáme na cestu za tajemstvím slepičího vajíčka.", en: "This time we will not come alone — a live hen will join us, and the children will explore the mystery of a chicken egg." },
+      mainImage: EDU_IMG.nest, gallery: [],
+      mainText: {
+        cz: "Na návštěvu tentokrát nepřijedeme sami – společnost nám bude dělat živá slepička, kterou si děti budou moci zblízka pozorovat. Společně se vydáme na cestu za tajemstvím slepičího vajíčka.",
+        en: "This time we will not come alone — a live hen will join us, and the children can observe her up close. Together we will explore the mystery of a chicken egg.",
+      },
+      targetGroup: { cz: "", en: "" },
+      location:    { cz: "", en: "" },
+      duration:    { cz: "", en: "" },
+      capacity:    { cz: "", en: "" },
+      age:         { cz: "", en: "" },
+      price:       { cz: "", en: "" },
+      season:      { cz: "", en: "" },
+      materials:   { cz: "", en: "" },
+      blocks: [
+        { id: "b-vaj-1", type: "text", heading: { cz: "Na co se společně podíváme?", en: "What will we explore together?" }, text: { cz: "Kde bere vajíčko svou sílu? Kdo snáší ta nejmenší vajíčka? Proč mají ptáci tak pevné skořápky? A co se děje uvnitř vajíčka?", en: "Where does an egg get its strength? Who lays the smallest eggs? Why are shells so strong? And what happens inside?" }, image: "", caption: { cz: "", en: "" } },
+      ],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+    {
+      id: "prog-dolesa", slug: "do-lesa-na-pozorovanou", categoryId: "cat-edu",
+      status: "published", featured: true, order: 3, publishFrom: "", publishTo: "",
+      title: { cz: "Do lesa na pozorovanou", en: "Into the forest to observe" },
+      perex: { cz: "Co se právě teď děje v lese? Kdo se tu schovává, co zrovna roste a podle čeho poznáme, že tu bylo zvíře, i když ho vůbec nevidíme?", en: "What is happening in the forest right now? Who is hiding here, what is growing, and how can we tell an animal has been here even if we cannot see it?" },
+      mainImage: EDU_IMG.observe, gallery: [],
+      mainText: {
+        cz: "Vydejme se do lesa na pozorovanou. Budeme objevovat život lesa takový, jaký je právě teď.",
+        en: "Let’s head into the forest to observe. We will discover forest life exactly as it is right now.",
+      },
+      targetGroup: { cz: "", en: "" },
+      location:    { cz: "", en: "" },
+      duration:    { cz: "", en: "" },
+      capacity:    { cz: "", en: "" },
+      age:         { cz: "", en: "" },
+      price:       { cz: "", en: "" },
+      season:      { cz: "", en: "" },
+      materials:   { cz: "", en: "" },
+      blocks: [
+        { id: "b-dol-1", type: "text", heading: { cz: "Na co se společně podíváme?", en: "What will we explore together?" }, text: { cz: "Co se právě teď děje v lese? Kdo se tu schovává? Co slyšíš, co cítíš, co vidíš? A kdo tu vlastně žije?", en: "What is happening in the forest right now? Who is hiding here? What can you hear, smell, see? And who lives here?" }, image: "", caption: { cz: "", en: "" } },
+      ],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+    {
+      id: "prog-skola-liberec", slug: "skola-v-prirode-liberec", categoryId: "cat-skola",
+      status: "published", featured: true, order: 1, publishFrom: "", publishTo: "",
+      title: { cz: "Škola v přírodě", en: "School in nature" },
+      perex: { cz: "Dopřejte dětem několik dní, během kterých se příroda stane místem pro objevování, poznávání i společné zážitky.", en: "Give children several days in which nature becomes a place for discovery, learning and shared experiences." },
+      mainImage: EDU_IMG.mountains, gallery: [EDU_IMG.forestPath, EDU_IMG.forest],
+      mainText: {
+        cz: "Školy v přírodě probíhají v Liberci–Rudolfově. Ubytování a stravování je zajištěno v České chalupě, odkud máme přírodu a les doslova na dosah. Pro děti je zajištěno ubytování a celodenní stravování a každý den také dopolední a odpolední programový blok. Společně se vydáme ven, budeme pozorovat, bádat, objevovat a prostřednictvím her a praktických aktivit poznávat přírodu kolem nás. Náplň programu přizpůsobím věku dětí, délce pobytu i aktuálnímu ročnímu období.",
+        en: "Schools in nature take place in Liberec–Rudolfov. Accommodation and meals are provided at Česká chalupa, with nature and forest close at hand. Children have full-board accommodation and morning and afternoon programme blocks every day. The programme is adapted to the children’s age, length of stay and the current season.",
+      },
+      targetGroup: { cz: "", en: "" },
+      location:    { cz: "Liberec–Rudolfov; ubytování a stravování v České chalupě", en: "Liberec–Rudolfov; accommodation and meals at Česká chalupa" },
+      duration:    { cz: "", en: "" },
+      capacity:    { cz: "", en: "" },
+      age:         { cz: "", en: "" },
+      price:       { cz: "Individuální — podle počtu dětí a délky pobytu", en: "Individual — based on the number of children and length of stay" },
+      season:      { cz: "", en: "" },
+      materials:   { cz: "", en: "" },
+      blocks: [
+
+      ],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+    {
+      id: "prog-venec-miru", slug: "vazani-adventnich-vencu-na-miru", categoryId: "cat-workshop",
+      status: "published", featured: true, order: 1, publishFrom: "", publishTo: "",
+      title: { cz: "Vázání adventních věnců na míru", en: "Custom advent wreath making" },
+      perex: { cz: "Chcete si s kolegyněmi, kamarádkami nebo celým týmem užít příjemný společný čas provoněný chvojím a vánoční atmosférou?", en: "Enjoy a pleasant shared time with colleagues, friends or your whole team, scented with greenery and Christmas atmosphere." },
+      mainImage: EDU_IMG.wreath, gallery: [EDU_IMG.wreathMake],
+      mainText: {
+        cz: "Objednejte si skupinový workshop vázání adventních věnců, během kterého si každý vytvoří svůj vlastní originální věnec a na chvíli zpomalí v předvánočním shonu. Workshop je vhodný pro pracovní kolektivy, skupiny přátel i jako součást firemního předvánočního setkání či teambuildingu. Přijedu za vámi a přivezu vše potřebné k tvorbě. Společně si ukážeme, jak správně uvázat korpus z čerstvého chvojí, a poté už bude prostor pro vlastní kreativitu a zdobení. Každý účastník si na závěr odnese vlastnoručně vytvořený adventní věnec.",
+        en: "Book a group advent-wreath workshop where everyone creates an original wreath and takes a break from the pre-Christmas rush. The workshop is suitable for work teams, groups of friends, company gatherings or team-building. I come to you and bring everything needed for making the wreaths.",
+      },
+      targetGroup: { cz: "Pracovní kolektivy, skupiny přátel, firemní setkání či teambuilding", en: "Work teams, groups of friends, company gatherings or team-building" },
+      location:    { cz: "Přijedu za vámi", en: "I come to you" },
+      duration:    { cz: "", en: "" },
+      capacity:    { cz: "", en: "" },
+      age:         { cz: "", en: "" },
+      price:       { cz: "Individuální — podle počtu účastníků a zvoleného materiálu", en: "Individual — based on participant count and selected materials" },
+      season:      { cz: "Advent / předvánoční období", en: "Advent / pre-Christmas season" },
+      materials:   { cz: "Veškeré potřebné materiály k tvorbě přivezu s sebou.", en: "All necessary materials are provided." },
+      blocks: [],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+    {
+      id: "prog-venec-chaloupka", slug: "vazani-adventnich-vencu-ceska-chaloupka", categoryId: "cat-workshop",
+      status: "published", featured: true, order: 2, publishFrom: "", publishTo: "",
+      title: { cz: "Vázání adventních věnců na České chalupě", en: "Advent wreath making at Česká chalupa" },
+      perex: { cz: "Nalaďme se společně na vánoční atmosféru. Vytvoříme si společně krásný adventní věnec.", en: "Let’s get into the Christmas atmosphere together and create a beautiful advent wreath." },
+      mainImage: EDU_IMG.wreathMake, gallery: [EDU_IMG.wreath],
+      mainText: {
+        cz: "Nalaďme se společně na vánoční atmosféru. Vytvoříme si společně krásný adventní věnec.",
+        en: "Let’s get into the Christmas atmosphere together and create a beautiful advent wreath.",
+      },
+      targetGroup: { cz: "Rodiny, skupiny přátel, firmy", en: "Families, groups of friends, companies" },
+      location:    { cz: "Česká chaloupka v přírodě", en: "Czech cottage in nature" },
+      duration:    { cz: "", en: "" },
+      capacity:    { cz: "10–15 osob", en: "10–15 people" },
+      age:         { cz: "", en: "" },
+      price:       { cz: "", en: "" },
+      season:      { cz: "", en: "" },
+      materials:   { cz: "", en: "" },
+      blocks: [
+        { id: "b-ch-1", type: "text", heading: { cz: "Občerstvení", en: "Refreshments" }, text: { cz: "Na přání můžeme zajistit i drobné občerstvení.", en: "On request we can also arrange light refreshments." }, image: "", caption: { cz: "", en: "" } },
+      ],
+      ctas: [contactCta()], attachments: [], seo: { title: { cz: "", en: "" }, description: { cz: "", en: "" } },
+    },
+  ],
+};
