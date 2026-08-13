@@ -18,7 +18,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Admin password (single pre-set password, stored in backend env)
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'venku-admin-2026')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 
 ALLOWED_IMAGE_TYPES = {
     "image/jpeg": "jpg",
@@ -27,6 +27,10 @@ ALLOWED_IMAGE_TYPES = {
     "image/gif": "gif",
 }
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
+
+# Documents / files (attachments, file CTAs). Broader set than images.
+ALLOWED_DOC_EXTS = {"pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "csv", "zip", "jpg", "jpeg", "png", "webp", "gif"}
+MAX_DOC_SIZE = 25 * 1024 * 1024  # 25 MB
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -105,6 +109,37 @@ async def upload_image(
     # Public URL the frontend can drop into <img src=...>
     public_url = f"/api/files/{result['path']}"
     return {"path": result["path"], "url": public_url, "size": result.get("size", len(data))}
+
+
+@api_router.post("/admin/upload-doc")
+async def upload_doc(
+    file: UploadFile = File(...),
+    x_admin_password: Optional[str] = Header(None, alias="X-Admin-Password"),
+):
+    """Upload a document / file (PDF, docs, images) for attachments and file CTAs."""
+    if x_admin_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    filename = file.filename or "soubor"
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+    if ext not in ALLOWED_DOC_EXTS:
+        raise HTTPException(status_code=415, detail=f"Nepodporovaný typ souboru '.{ext}'.")
+
+    data = await file.read()
+    if len(data) == 0:
+        raise HTTPException(status_code=400, detail="Empty file")
+    if len(data) > MAX_DOC_SIZE:
+        raise HTTPException(status_code=413, detail="File too large (max 25 MB)")
+
+    obj_path = f"{APP_NAME}/docs/{uuid.uuid4().hex}.{ext}"
+    try:
+        result = put_object(obj_path, data, file.content_type or "application/octet-stream")
+    except Exception as e:
+        logging.exception("Object storage doc upload failed")
+        raise HTTPException(status_code=502, detail=f"Storage upload failed: {e}")
+
+    public_url = f"/api/files/{result['path']}"
+    return {"path": result["path"], "url": public_url, "size": result.get("size", len(data)), "name": filename}
 
 
 # ===== Public file serving =====

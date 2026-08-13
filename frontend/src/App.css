@@ -1117,3 +1117,22 @@ footer {
   height: 140px !important;
   width: auto !important;
 }
+
+/* ===== Compact rectangular logo (final override) ===== */
+.site-nav .nav-logo-img-light,
+.site-nav .nav-logo-img-dark {
+  height: 50px !important;
+  width: auto !important;
+}
+.site-nav.scrolled .nav-logo-img-light,
+.site-nav.scrolled .nav-logo-img-dark {
+  height: 42px !important;
+  width: auto !important;
+}
+@media (min-width: 1024px) {
+  .site-nav .nav-logo-img-light,
+  .site-nav .nav-logo-img-dark { height: 54px !important; }
+  .site-nav.scrolled .nav-logo-img-light,
+  .site-nav.scrolled .nav-logo-img-dark { height: 44px !important; }
+}
+.footer-logo-img { width: 170px !important; height: auto !important; }

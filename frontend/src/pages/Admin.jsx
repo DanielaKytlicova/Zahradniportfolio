@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useContentMeta } from "../contexts/ContentContext";
+import EduEditor from "../components/admin/EduEditor";
 import "./Admin.css";
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
@@ -222,6 +223,22 @@ function Editor({ initial, password, onLogout }) {
     return data.url;
   };
 
+  // Upload helper for documents / files (PDF etc.) used by CTAs & attachments.
+  const uploadDoc = async (file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch(`${BACKEND}/api/admin/upload-doc`, {
+      method: "POST",
+      headers: { "X-Admin-Password": password },
+      body: fd,
+    });
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      throw new Error(detail || `Upload failed: ${res.status}`);
+    }
+    return res.json();
+  };
+
   const save = async () => {
     setStatus("saving");
     setErrMsg("");
@@ -436,31 +453,19 @@ function Editor({ initial, password, onLogout }) {
         <TextField label="Filozofie — text" value={data.about?.philosophyText} onChange={(v) => setPath(["about", "philosophyText"], v)} multiline />
       </Section>
 
-      {/* VZDELAVANI */}
-      <Section title="Vzdělávání" testid="admin-section-vzdelavani">
-        <TextField label="Badge" value={data.vzdelavani?.badge} onChange={(v) => setPath(["vzdelavani", "badge"], v)} />
-        <TextField label="Titulek (HTML)" value={data.vzdelavani?.title} onChange={(v) => setPath(["vzdelavani", "title"], v)} multiline />
-        <TextField label="Podtitulek" value={data.vzdelavani?.sub} onChange={(v) => setPath(["vzdelavani", "sub"], v)} multiline />
-        <TextField label="Úvodní nadpis (HTML)" value={data.vzdelavani?.introTitle} onChange={(v) => setPath(["vzdelavani", "introTitle"], v)} multiline />
-        <TextField label="Úvodní text" value={data.vzdelavani?.introText} onChange={(v) => setPath(["vzdelavani", "introText"], v)} multiline />
+      {/* VZDELAVANI — nový systém (programy, kategorie, workshopy, detaily) */}
+      <EduEditor
+        data={data}
+        setData={setData}
+        setPath={setPath}
+        password={password}
+        uploadDoc={uploadDoc}
+        TextField={TextField}
+        PlainField={PlainField}
+        ImageField={ImageField}
+        Section={Section}
+      />
 
-        <h3 className="adm-subhead">Programy</h3>
-        {(data.vzdelavani?.programs || []).map((p, i) => (
-          <div className="adm-card" key={i}>
-            <div className="adm-card-head">
-              <strong>Program #{i + 1}</strong>
-            </div>
-            <PlainField label="Ikona (leaf, book, house)" value={p.icon} onChange={(v) => setPath(["vzdelavani", "programs", i, "icon"], v)} />
-            <TextField label="Název" value={p.title} onChange={(v) => setPath(["vzdelavani", "programs", i, "title"], v)} />
-            <TextField label="Popis" value={p.text} onChange={(v) => setPath(["vzdelavani", "programs", i, "text"], v)} multiline />
-            <TextField label="Tag" value={p.tag} onChange={(v) => setPath(["vzdelavani", "programs", i, "tag"], v)} />
-          </div>
-        ))}
-
-        <TextField label="CTA titulek" value={data.vzdelavani?.ctaTitle} onChange={(v) => setPath(["vzdelavani", "ctaTitle"], v)} />
-        <TextField label="CTA text" value={data.vzdelavani?.ctaText} onChange={(v) => setPath(["vzdelavani", "ctaText"], v)} multiline />
-        <TextField label="CTA tlačítko" value={data.vzdelavani?.ctaBtn} onChange={(v) => setPath(["vzdelavani", "ctaBtn"], v)} />
-      </Section>
 
       {/* CONTACT */}
       <Section title="Kontakt" testid="admin-section-kontakt">
